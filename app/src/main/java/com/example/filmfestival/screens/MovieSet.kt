@@ -8,6 +8,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.filmfestival.composables.BottomNavBar
 
@@ -23,10 +24,10 @@ fun MovieSet(
                 .fillMaxSize()
                 .padding(paddingValues)
         ){
-            Text(
-                text = "MOVIES HERE",
-                fontSize = 60.sp
-            )
+//            Text(
+//                text = "MOVIES HERE",
+//                fontSize = 60.sp
+//            )
         }
     }
 }
