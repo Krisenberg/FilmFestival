@@ -23,6 +23,7 @@ object DatabaseModule {
         MovieDatabase::class.java,
         "movies_database"
     ).createFromAsset("database/movies.db").build()
+
     @Singleton
     @Provides
     fun provideMovieDao(database: MovieDatabase) = database.movieDao()

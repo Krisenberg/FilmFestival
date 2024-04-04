@@ -9,11 +9,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.filmfestival.MainViewModel
 import com.example.filmfestival.composables.BottomNavBar
 
 @Composable
 fun UserProfile(
-    navController: NavController
+    navController: NavController,
+    viewModel: MainViewModel
 ){
     Scaffold(
         bottomBar = { BottomNavBar(navController = navController) }

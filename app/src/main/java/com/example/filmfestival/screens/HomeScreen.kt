@@ -17,6 +17,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.filmfestival.MainViewModel
 import com.example.filmfestival.R
 import com.example.filmfestival.composables.BottomNavBar
 import com.example.filmfestival.ui.theme.LightBackground
@@ -25,7 +26,8 @@ import com.example.filmfestival.ui.theme.WhiteText
 
 @Composable
 fun HomeScreen(
-    navController: NavController
+    navController: NavController,
+    viewModel: MainViewModel
 ){
     Scaffold(
         bottomBar = { BottomNavBar(navController = navController) }

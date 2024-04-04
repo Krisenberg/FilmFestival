@@ -4,8 +4,10 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.example.filmfestival.MainViewModel
 import com.example.filmfestival.screens.HomeScreen
 import com.example.filmfestival.screens.MovieSet
+import com.example.filmfestival.screens.UserProfile
 
 enum class NavigationRoutes {
     HOME_SCREEN,
@@ -20,16 +22,17 @@ enum class NavigationRoutes {
 @Composable
 fun CreateNavigationGraph(
     navController: NavHostController,
+    viewModel: MainViewModel
 ){
     NavHost(navController = navController, startDestination = NavigationRoutes.HOME_SCREEN.name) {
         composable(NavigationRoutes.HOME_SCREEN.name) {
-            HomeScreen(navController = navController)
+            HomeScreen(navController = navController, viewModel = viewModel)
         }
         composable(NavigationRoutes.MOVIE_SET.name) {
-            MovieSet(navController = navController)
+            MovieSet(navController = navController, viewModel = viewModel)
         }
         composable(NavigationRoutes.USER_PROFILE.name) {
-            MovieSet(navController = navController)
+            UserProfile(navController = navController, viewModel = viewModel)
         }
     }
 }

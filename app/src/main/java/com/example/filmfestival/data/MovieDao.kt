@@ -9,5 +9,5 @@ import kotlinx.coroutines.flow.Flow
 interface MovieDao {
 
     @Query("SELECT * FROM movies ORDER BY title ASC")
-    fun getMoviesOrderedByTitle(): Flow<List<Movie>>
+    fun getMoviesOrderedByTitle(): List<Movie>
 }

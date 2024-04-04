@@ -21,7 +21,7 @@ class MainActivity : ComponentActivity() {
             FilmFestivalTheme {
                 val navController = rememberNavController()
                 val viewModel = hiltViewModel<MainViewModel>()
-                CreateNavigationGraph(navController = navController)
+                CreateNavigationGraph(navController = navController, viewModel = viewModel)
 //                Surface(
 //                    modifier = Modifier.fillMaxSize(),
 //                    color = MaterialTheme.colorScheme.background
