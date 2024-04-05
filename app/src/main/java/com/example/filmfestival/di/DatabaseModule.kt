@@ -21,7 +21,7 @@ object DatabaseModule {
     fun provideDatabase(app: Application) = Room.databaseBuilder(
         app,
         MovieDatabase::class.java,
-        "movies_database"
+        "movies_db"
     ).createFromAsset("database/movies.db").build()
 
     @Singleton

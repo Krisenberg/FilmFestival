@@ -1,18 +1,43 @@
 package com.example.filmfestival.screens
 
+import android.util.Log
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.ColorMatrix
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.example.filmfestival.MainViewModel
 import com.example.filmfestival.composables.BottomNavBar
+import com.example.filmfestival.models.Movie
+import kotlinx.coroutines.flow.Flow
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun MovieSet(
     navController: NavController,
@@ -21,16 +46,77 @@ fun MovieSet(
     Scaffold(
         bottomBar = { BottomNavBar(navController = navController) }
     ){ paddingValues ->
+        val currentPage by remember { mutableIntStateOf(0) }
+        val moviesFlow: Flow<List<Movie>> = viewModel.moviesOrderedByTitle
+        val movies by moviesFlow.collectAsState(initial = emptyList())
+//        val movies by viewModel.moviesOrderedByTitle.collectAsState(initial = emptyList())
+
+
+        val pagerState = rememberPagerState(
+            initialPage = currentPage,
+            initialPageOffsetFraction = 0f
+        ) {
+            movies.size
+        }
         Column (
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
-        ){
-            val movies = viewModel.moviesOrderedByTitle
-            Text(
-                text = "MOVIES HERE",
-                fontSize = 30.sp
-            )
+        ) {
+            HorizontalPager(
+                state = pagerState
+            ) { index ->
+                val pageOffset = (pagerState.currentPage - index) + pagerState.currentPageOffsetFraction
+                val matrix = remember {
+                    ColorMatrix()
+                }
+                val imageSize by animateFloatAsState(
+                    targetValue = if(pageOffset != 0.0f) 0.85f else 1f,
+                    animationSpec = tween(durationMillis = 200),
+                    label = "imageSizeFloat"
+                )
+                
+                LaunchedEffect(key1 = imageSize) {
+                    if(pageOffset != 0.0f) {
+                        Log.d("TAG", "0f")
+                        matrix.setToSaturation(0f)
+                    } else {
+                        Log.d("TAG", "1f")
+                        matrix.setToSaturation(1f)
+                    }
+                } 
+                
+                AsyncImage(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(1.dp)
+                        .clip(RoundedCornerShape(4.dp))
+                        .graphicsLayer {
+                            scaleX = imageSize
+                            scaleY = imageSize
+                        },
+                    model = ImageRequest
+                        .Builder(LocalContext.current)
+                        .data(movies[index].posterUrl)
+                        .build(),
+                    contentDescription = "Poster of ${movies[index].title}",
+                    colorFilter = ColorFilter.colorMatrix(matrix),
+                    contentScale = ContentScale.Crop
+                )
+            }
         }
+        
+//        Column (
+//            modifier = Modifier
+//                .fillMaxSize()
+//                .padding(paddingValues)
+//        ){
+//            val movies = viewModel.moviesOrderedByTitle.collectAsState(initial = emptyList())
+//            val pagerState = rememberPagerState ()
+//            Text(
+//                text = "MOVIES HERE",
+//                fontSize = 30.sp
+//            )
+//        }
     }
 }
