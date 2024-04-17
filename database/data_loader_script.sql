@@ -1,94 +1,94 @@
 -- Cleanup
-DROP TABLE IF EXISTS "Actor";
-DROP TABLE IF EXISTS "Award";
-DROP TABLE IF EXISTS "Cast";
-DROP TABLE IF EXISTS "Movie";
-DROP TABLE IF EXISTS "Show";
-DROP TABLE IF EXISTS "Ticket";
-DROP TABLE IF EXISTS "Trailer";
-DROP TABLE IF EXISTS "User";
 DROP TABLE IF EXISTS "Watchlist";
+DROP TABLE IF EXISTS "Cast";
+DROP TABLE IF EXISTS "Ticket";
+DROP TABLE IF EXISTS "Award";
+DROP TABLE IF EXISTS "Show";
+DROP TABLE IF EXISTS "Trailer";
+DROP TABLE IF EXISTS "Movie";
+DROP TABLE IF EXISTS "User";
+DROP TABLE IF EXISTS "Actor";
 
 -- Create tables
 CREATE TABLE "Actor" (
-	"ID"	INTEGER NOT NULL,
-	"Name"	TEXT NOT NULL,
-	"Photo"	TEXT,
-	PRIMARY KEY("ID")
+	"id"	INTEGER NOT NULL,
+	"name"	TEXT NOT NULL,
+	"photo"	TEXT,
+	PRIMARY KEY("id")
 );
 
 CREATE TABLE "Award" (
-	"ID"	INTEGER NOT NULL,
-	"MovieID"	INTEGER NOT NULL,
-	"Name"	TEXT NOT NULL,
-	"Description"	TEXT,
-	FOREIGN KEY("MovieID") REFERENCES "Movie"("ID"),
-	PRIMARY KEY("ID")
+	"id"	INTEGER NOT NULL,
+	"movieId"	INTEGER NOT NULL,
+	"name"	TEXT NOT NULL,
+	"description"	TEXT,
+	FOREIGN KEY("movieId") REFERENCES "Movie"("id"),
+	PRIMARY KEY("id")
 );
 
 CREATE TABLE "Cast" (
-	"MovieID"	INTEGER NOT NULL,
-	"ActorID"	INTEGER NOT NULL,
-	"Starring"	TEXT NOT NULL,
-	FOREIGN KEY("ActorID") REFERENCES "Actor"("ID"),
-	FOREIGN KEY("MovieID") REFERENCES "Movie"("ID"),
-	PRIMARY KEY("MovieID","ActorID")
-)
+	"movieId"	INTEGER NOT NULL,
+	"actorId"	INTEGER NOT NULL,
+	"starring"	TEXT NOT NULL,
+	FOREIGN KEY("actorId") REFERENCES "Actor"("id"),
+	FOREIGN KEY("movieId") REFERENCES "Movie"("id"),
+	PRIMARY KEY("movieId","actorId")
+);
 
 CREATE TABLE "Movie" (
-	"ID"	INTEGER NOT NULL,
-	"Title"	TEXT NOT NULL,
-	"MoviePoster"	TEXT NOT NULL,
-	"MoviePhoto"	TEXT NOT NULL,
-	"Year"	INTEGER NOT NULL,
-	"Duration"	INTEGER NOT NULL,
-	"Genre"	TEXT NOT NULL,
-	"Description"	TEXT NOT NULL,
-	PRIMARY KEY("ID")
+	"id"	INTEGER NOT NULL,
+	"title"	TEXT NOT NULL,
+	"moviePoster"	TEXT NOT NULL,
+	"moviePhoto"	TEXT NOT NULL,
+	"year"	INTEGER NOT NULL,
+	"duration"	INTEGER NOT NULL,
+	"genre"	TEXT NOT NULL,
+	"description"	TEXT NOT NULL,
+	PRIMARY KEY("id")
 );
 
 CREATE TABLE "Show" (
-	"ID"	INTEGER NOT NULL,
-	"MovieID"	INTEGER NOT NULL,
-	"DateTime"	TEXT NOT NULL,
-	PRIMARY KEY("ID"),
-	FOREIGN KEY("MovieID") REFERENCES "Movie"("ID")
+	"id"	INTEGER NOT NULL,
+	"movieId"	INTEGER NOT NULL,
+	"dateTime"	TEXT NOT NULL,
+	PRIMARY KEY("id"),
+	FOREIGN KEY("movieId") REFERENCES "Movie"("id")
 );
 
 CREATE TABLE "Ticket" (
-	"UserID"	INTEGER NOT NULL,
-	"ShowID"	INTEGER NOT NULL,
-	PRIMARY KEY("UserID","ShowID"),
-	FOREIGN KEY("ShowID") REFERENCES "Show"("ID"),
-	FOREIGN KEY("UserID") REFERENCES "User"("ID")
+	"userId"	INTEGER NOT NULL,
+	"showId"	INTEGER NOT NULL,
+	PRIMARY KEY("userId","showId"),
+	FOREIGN KEY("showId") REFERENCES "Show"("id"),
+	FOREIGN KEY("userId") REFERENCES "User"("id")
 );
 
 CREATE TABLE "Trailer" (
-	"ID"	INTEGER NOT NULL,
-	"MovieID"	INTEGER NOT NULL,
-	"Trailer"	TEXT NOT NULL,
-	FOREIGN KEY("MovieID") REFERENCES "Movie"("ID"),
-	PRIMARY KEY("ID")
+	"id"	INTEGER NOT NULL,
+	"movieId"	INTEGER NOT NULL,
+	"trailer"	TEXT NOT NULL,
+	FOREIGN KEY("movieId") REFERENCES "Movie"("id"),
+	PRIMARY KEY("id")
 );
 
 CREATE TABLE "User" (
-	"ID"	INTEGER NOT NULL,
-	"Username"	TEXT NOT NULL UNIQUE,
-	"Password"	TEXT NOT NULL,
-	"Avatar"	TEXT,
-	PRIMARY KEY("ID")
+	"id"	INTEGER NOT NULL,
+	"username"	TEXT NOT NULL UNIQUE,
+	"password"	TEXT NOT NULL,
+	"avatar"	TEXT,
+	PRIMARY KEY("id")
 );
 
 CREATE TABLE "Watchlist" (
-	"UserID"	INTEGER NOT NULL,
-	"MovieID"	INTEGER NOT NULL,
-	PRIMARY KEY("UserID","MovieID"),
-	FOREIGN KEY("UserID") REFERENCES "User"("ID"),
-	FOREIGN KEY("MovieID") REFERENCES "Movie"("ID")
+	"userId"	INTEGER NOT NULL,
+	"movieId"	INTEGER NOT NULL,
+	PRIMARY KEY("userId","movieId"),
+	FOREIGN KEY("userId") REFERENCES "User"("id"),
+	FOREIGN KEY("movieId") REFERENCES "Movie"("id")
 );
 
 -- Insert data
-INSERT INTO "Actor"("ID","Name","Photo")
+INSERT INTO "Actor"("id","name","photo")
 VALUES
     (1,"Timothée Chalamet","https://bi.im-g.pl/im/0b/53/1d/z30748939ICR,Timothee-Chalamet.jpg"),
     (2,"Zendaya","https://fwcdn.pl/ppo/60/35/1546035/451218.2.jpg"),
@@ -99,7 +99,7 @@ VALUES
     (7,"Florence Pugh","https://fwcdn.pl/fph/34/81/10003481/1190521_1.3.jpg"),
     (8,"Dave Bautista","https://upload.wikimedia.org/wikipedia/commons/thumb/4/40/Dave_Bautista_Photo_Op_GalaxyCon_Minneapolis_2019.jpg/640px-Dave_Bautista_Photo_Op_GalaxyCon_Minneapolis_2019.jpg");
 
-INSERT INTO "Movie" ("ID","Title","MoviePoster","MoviePhoto","Year","Duration","Genre","Description",)
+INSERT INTO "Movie" ("id","title","moviePoster","moviePhoto","year","duration","genre","description")
 VALUES
     (1,"Dune: Part Two","https://image.tmdb.org/t/p/original/5aUVLiqcW0kFTBfGsCWjvLas91w.jpg",
         "https://ca-times.brightspotcdn.com/dims4/default/c04179b/2147483647/strip/true/crop/2700x1580+0+0/resize/1200x702!/quality/75/?url=https%3A%2F%2Fcalifornia-times-brightspot.s3.amazonaws.com%2Fdc%2F0c%2F962ffd064d33a015a95c54b07c80%2Fdun2-27986r-jpv3.jpg",
@@ -110,17 +110,17 @@ VALUES
         2023,141,"Drama",
         "An account of the fantastical evolution of Bella Baxter, a young woman brought back to life by the brilliant and unorthodox scientist Dr. Godwin Baxter.");
 
-INSERT INTO "User" ("ID","Username","Password","Avatar",)
+INSERT INTO "User" ("id","username","password","avatar")
 VALUES
     (1,"Adam","adam","https://exumag.com/images/storychief/oscars_2d5cb98749d3a7b50369e1c4c64a5a39.jpg"),
     (2,"Stud","stud",NULL);
 
-INSERT INTO "Award" ("ID","MovieID","Name","Description")
+INSERT INTO "Award" ("id","movieId","name","description")
 VALUES
     (1,1,"Don LaFontaine Award for Best Voice Over","2023 Nominee"),
     (2,1,"HCA Award","2023 Nominee - Most Anticipated Film");
 
-INSERT INTO "Cast" ("MovieID","ActorID","Starring")
+INSERT INTO "Cast" ("movieId","actorId","starring")
 VALUES
     (1,1,"Paul Atreides"),
     (1,2,"Chani"),
@@ -131,7 +131,7 @@ VALUES
     (1,7,"Princess Irulan"),
     (1,8,"Beast Rabban");
 
-INSERT INTO "Show" ("ID","MovieID","DateTime")
+INSERT INTO "Show" ("id","movieId","dateTime")
 VALUES
     (1,1,"2024-07-16T16:45"),
     (2,1,"2024-07-16T18:30"),
@@ -139,16 +139,16 @@ VALUES
     (4,1,"2024-07-19T18:15"),
     (5,1,"2024-07-19T20:00");
 
-INSERT INTO "Ticket" ("UserID","ShowID")
+INSERT INTO "Ticket" ("userId","showId")
 VALUES
     (1,2),
     (2,5);
 
-INSERT INTO "Trailer" ("ID","MovieID","Trailer")
+INSERT INTO "Trailer" ("id","movieId","trailer")
 VALUES
     (1,1,"https://www.youtube.com/watch?v=0UtYt6Vg2nY");
 
-INSERT INTO "Watchlist" ("UserID","MovieID")
+INSERT INTO "Watchlist" ("userId","movieId")
 VALUES
     (1,1),
     (1,2);

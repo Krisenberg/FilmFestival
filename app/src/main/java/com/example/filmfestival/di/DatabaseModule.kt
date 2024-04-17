@@ -26,6 +26,29 @@ object DatabaseModule {
 
     @Singleton
     @Provides
+    fun provideAwardDao(database: MovieDatabase) = database.awardDao()
+
+    @Singleton
+    @Provides
+    fun provideCastDao(database: MovieDatabase) = database.castDao()
+
+    @Singleton
+    @Provides
     fun provideMovieDao(database: MovieDatabase) = database.movieDao()
 
+    @Singleton
+    @Provides
+    fun provideShowDao(database: MovieDatabase) = database.showDao()
+
+    @Singleton
+    @Provides
+    fun provideTicketDao(database: MovieDatabase) = database.ticketDao()
+
+    @Singleton
+    @Provides
+    fun provideTrailerDao(database: MovieDatabase) = database.trailerDao()
+
+    @Singleton
+    @Provides
+    fun provideWatchlistDao(database: MovieDatabase) = database.watchlistDao()
 }

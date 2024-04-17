@@ -3,10 +3,15 @@ package com.example.filmfestival.models
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-@Entity(tableName = "movies")
+@Entity(tableName = "Movie")
 data class Movie(
-    @PrimaryKey(autoGenerate = true)
+    @PrimaryKey
     val id: Int,
     val title: String,
-    val posterUrl: String
+    val moviePoster: String,
+    val moviePhoto: String,
+    val year: Int,
+    val duration: Int,
+    val genre: String,
+    val description: String
 )
