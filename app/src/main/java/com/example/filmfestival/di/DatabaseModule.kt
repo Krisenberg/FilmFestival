@@ -61,6 +61,8 @@ object DatabaseModule {
                 val insertStatement = createSQLInsertStatement(filename, tableSignature)
                 db.execSQL(insertStatement)
             }
+        }
+    }).build()
 //            val actorDataLoadStatement = buildString {
 //                append("INSERT INTO Actor (actorId, name, photo) VALUES ")
 //                bufferedReader.forEachLine { line ->
@@ -80,8 +82,6 @@ object DatabaseModule {
 //                    "(7,\"Florence Pugh\",\"https://fwcdn.pl/fph/34/81/10003481/1190521_1.3.jpg\"), " +
 //                    "(8,\"Dave Bautista\",\"https://upload.wikimedia.org/wikipedia/commons/thumb/4/40/Dave_Bautista_Photo_Op_GalaxyCon_Minneapolis_2019.jpg/640px-Dave_Bautista_Photo_Op_GalaxyCon_Minneapolis_2019.jpg\"), " +
 //                    "(9,\"Daniel Craig\",\"https://fwcdn.pl/ppo/60/35/1546035/451218.2.jpg\")")
-        }
-    }).build()
 
 //        addMigrations(MovieDatabase.migration1To2)
 
