@@ -3,10 +3,11 @@ package com.example.filmfestival.models
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-@Entity(tableName = "Actor")
-data class Actor(
+@Entity(tableName = "Role")
+data class Role(
     @PrimaryKey
+    val roleId: Int,
+    val movieId: Int,
     val actorId: Int,
-    val name: String,
-    val photo: String
+    val starring: String
 )

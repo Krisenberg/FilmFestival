@@ -56,82 +56,85 @@ fun MovieSet(
     Scaffold(
         bottomBar = { BottomNavBar(navController = navController) }
     ){ paddingValues ->
-        val currentPage by remember { mutableIntStateOf(0) }
-        val moviesFlow: Flow<List<Movie>> = viewModel.moviesOrderedByTitle
-        val movies by moviesFlow.collectAsState(initial = emptyList())
-//        val movies by viewModel.moviesOrderedByTitle.collectAsState(initial = emptyList())
+        Column (modifier = Modifier.padding(paddingValues)){
 
-
-        val pagerState = rememberPagerState(
-            initialPage = currentPage,
-            initialPageOffsetFraction = 0f
-        ) {
-            movies.size
         }
-        Column (
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
-        ) {
-            HorizontalPager(
-                state = pagerState
-            ) { index ->
-                val pageOffset = (pagerState.currentPage - index) + pagerState.currentPageOffsetFraction
-                val matrix = remember {
-                    ColorMatrix()
-                }
-                val imageSize by animateFloatAsState(
-                    targetValue = if(pageOffset != 0.0f) 0.85f else 1f,
-                    animationSpec = tween(durationMillis = 200),
-                    label = "imageSizeFloat"
-                )
-                
-//                LaunchedEffect(key1 = imageSize) {
-//                    if(pageOffset != 0.0f) {
-//                        Log.d("TAG", "0f")
-//                        matrix.setToSaturation(0f)
-//                    } else {
-//                        Log.d("TAG", "1f")
-//                        matrix.setToSaturation(1f)
-//                    }
+//        val currentPage by remember { mutableIntStateOf(0) }
+//        val moviesFlow: Flow<List<Movie>> = viewModel.moviesOrderedByTitle
+//        val movies by moviesFlow.collectAsState(initial = emptyList())
+////        val movies by viewModel.moviesOrderedByTitle.collectAsState(initial = emptyList())
+//
+//
+//        val pagerState = rememberPagerState(
+//            initialPage = currentPage,
+//            initialPageOffsetFraction = 0f
+//        ) {
+//            movies.size
+//        }
+//        Column (
+//            modifier = Modifier
+//                .fillMaxSize()
+//                .padding(paddingValues)
+//        ) {
+//            HorizontalPager(
+//                state = pagerState
+//            ) { index ->
+//                val pageOffset = (pagerState.currentPage - index) + pagerState.currentPageOffsetFraction
+//                val matrix = remember {
+//                    ColorMatrix()
 //                }
-                val topFade = Brush.verticalGradient(0f to Color.Transparent, 0.4f to Color.Red)
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .graphicsLayer {
-                            scaleX = imageSize
-                            scaleY = imageSize
-                        },
-                    contentAlignment = Alignment.TopCenter
-                ){
-                    AsyncImage(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(1.dp)
-                            .clip(RoundedCornerShape(4.dp))
-                            .fadingEdge(topFade),
-                        model = ImageRequest
-                            .Builder(LocalContext.current)
-                            .data(movies[index].posterUrl)
-                            .build(),
-                        contentDescription = "Poster of ${movies[index].title}",
-                        colorFilter = ColorFilter.colorMatrix(matrix),
-                        contentScale = ContentScale.Crop
-                    )
+//                val imageSize by animateFloatAsState(
+//                    targetValue = if(pageOffset != 0.0f) 0.85f else 1f,
+//                    animationSpec = tween(durationMillis = 200),
+//                    label = "imageSizeFloat"
+//                )
+//
+////                LaunchedEffect(key1 = imageSize) {
+////                    if(pageOffset != 0.0f) {
+////                        Log.d("TAG", "0f")
+////                        matrix.setToSaturation(0f)
+////                    } else {
+////                        Log.d("TAG", "1f")
+////                        matrix.setToSaturation(1f)
+////                    }
+////                }
+//                val topFade = Brush.verticalGradient(0f to Color.Transparent, 0.4f to Color.Red)
+//                Box(
+//                    modifier = Modifier
+//                        .fillMaxSize()
+//                        .graphicsLayer {
+//                            scaleX = imageSize
+//                            scaleY = imageSize
+//                        },
+//                    contentAlignment = Alignment.TopCenter
+//                ){
+//                    AsyncImage(
+//                        modifier = Modifier
+//                            .fillMaxSize()
+//                            .padding(1.dp)
+//                            .clip(RoundedCornerShape(4.dp))
+//                            .fadingEdge(topFade),
+//                        model = ImageRequest
+//                            .Builder(LocalContext.current)
+//                            .data(movies[index].posterUrl)
+//                            .build(),
+//                        contentDescription = "Poster of ${movies[index].title}",
+//                        colorFilter = ColorFilter.colorMatrix(matrix),
+//                        contentScale = ContentScale.Crop
+//                    )
+//
+//                    Text(
+//                        modifier = Modifier.padding(top = 24.dp),
+//                        text = movies[index].title.uppercase(),
+//                        color = Color.White,
+//                        fontFamily = FontFamily(Font(DeviceFontFamilyName("sans-serif-condensed"), weight = FontWeight.Medium)),
+//                        fontSize = 40.sp,
+//                        lineHeight = 30.sp
+//                    )
+//                }
+//            }
+//        }
 
-                    Text(
-                        modifier = Modifier.padding(top = 24.dp),
-                        text = movies[index].title.uppercase(),
-                        color = Color.White,
-                        fontFamily = FontFamily(Font(DeviceFontFamilyName("sans-serif-condensed"), weight = FontWeight.Medium)),
-                        fontSize = 40.sp,
-                        lineHeight = 30.sp
-                    )
-                }
-            }
-        }
-        
 //        Column (
 //            modifier = Modifier
 //                .fillMaxSize()
