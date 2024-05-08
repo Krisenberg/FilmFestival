@@ -2,9 +2,12 @@ package com.example.filmfestival.utils
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
 import com.example.filmfestival.MainViewModel
+import com.example.filmfestival.screens.EditUser
 import com.example.filmfestival.screens.HomeScreen
 import com.example.filmfestival.screens.MovieSet
 import com.example.filmfestival.screens.UserProfile
@@ -33,6 +36,18 @@ fun CreateNavigationGraph(
         }
         composable(NavigationRoutes.USER_PROFILE.name) {
             UserProfile(navController = navController, viewModel = viewModel)
+        }
+        composable(NavigationRoutes.NEWS_DETAILS.name){
+            //TODO - navgiation tutorial with arguments
+            //TODO - passing username as a parameter
+            //TODO - passing news as a parameter
+        }
+        composable(
+            "${NavigationRoutes.USER_PROFILE_EDIT.name}/{username}",
+            arguments = listOf(navArgument("username") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val username = backStackEntry.arguments?.getString("username") ?: " "
+            EditUser(navController = navController, viewModel = viewModel, username = username)
         }
     }
 }
