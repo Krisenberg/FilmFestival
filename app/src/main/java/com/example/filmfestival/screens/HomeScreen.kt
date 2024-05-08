@@ -23,7 +23,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.constraintlayout.compose.Wrap
+//import androidx.constraintlayout.compose.Wrap
 import androidx.navigation.NavController
 import com.example.filmfestival.ui.theme.LightBackground
 import com.example.filmfestival.ui.theme.WhiteText
