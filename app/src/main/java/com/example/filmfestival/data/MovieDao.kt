@@ -2,11 +2,8 @@ package com.example.filmfestival.data
 
 import androidx.room.Dao
 import androidx.room.Query
-import androidx.room.Transaction
-import androidx.room.Upsert
 import com.example.filmfestival.models.Actor
 import com.example.filmfestival.models.Movie
-import com.example.filmfestival.models.crossRefs.MovieRoleCrossRef
 import com.example.filmfestival.models.relations.MovieWithRoles
 import com.example.filmfestival.models.relations.MovieWithAwards
 import com.example.filmfestival.models.relations.MovieWithShows

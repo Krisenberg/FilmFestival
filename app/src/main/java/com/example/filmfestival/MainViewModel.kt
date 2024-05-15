@@ -1,20 +1,11 @@
 package com.example.filmfestival
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.filmfestival.data.MovieDao
 import com.example.filmfestival.data.MovieRepository
-import com.example.filmfestival.models.Actor
-import com.example.filmfestival.models.Movie
-import com.example.filmfestival.models.MovieAllData
-import com.example.filmfestival.models.crossRefs.MovieRoleCrossRef
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Deferred
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -27,9 +18,11 @@ class MainViewModel @Inject constructor(
 //    val actors: LiveData<List<Actor>> = _actors
 
 //    val moviesOrderedByTitle: Flow<List<Movie>> = movieRepository.allMoviesOrderedByTitle
-    val moviesIdPoster = viewModelScope.async {
-        movieRepository.moviesIdPoster()
-    }
+//    val moviesIdPoster = viewModelScope.async {
+//        movieRepository.moviesIdPoster()
+//    }
+
+    suspend fun getMoviesIdTitlePoster() = movieRepository.moviesIdTitlePoster()
 
     suspend fun getMovieAllData(movieId: Int) = movieRepository.movieAllData(movieId)
 

@@ -1,13 +1,7 @@
 package com.example.filmfestival.data
 
-import androidx.compose.runtime.collectAsState
 import com.example.filmfestival.models.Movie
-import com.example.filmfestival.models.MovieAllData
-import com.example.filmfestival.models.relations.RoleWithActor
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.forEach
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.zip
+import com.example.filmfestival.models.dto.MovieAllData
 import javax.inject.Inject
 //
 class MovieRepository @Inject constructor(
@@ -16,9 +10,9 @@ class MovieRepository @Inject constructor(
 
 //    val allMoviesOrderedByTitle: Flow<List<Movie>> = movieDao.getMoviesOrderedByTitle()
 
-    suspend fun moviesIdPoster(): List<Pair<Int, String>> =
+    suspend fun moviesIdTitlePoster(): List<Triple<Int, String, String>> =
         movieDao.getMovies().map { movie: Movie ->
-            Pair(movie.movieId, movie.moviePoster)
+            Triple(movie.movieId, movie.title, movie.moviePoster)
         }
 
     suspend fun movieAllData(movieId : Int): MovieAllData {
@@ -29,8 +23,9 @@ class MovieRepository @Inject constructor(
         return MovieAllData(
             movie = movieWithAwards.movie,
             awards = movieWithAwards.awards,
-            rolesWithActors = movieWithRoles.roles
-                .map { role -> movieDao.getRoleWithActor(role.roleId) },
+            rolesWithActors = movieWithRoles.roles.map {
+                role -> movieDao.getRoleWithActor(role.roleId)
+            },
             shows = movieWithShows.shows,
             trailers = movieWithTrailers.trailers
         )

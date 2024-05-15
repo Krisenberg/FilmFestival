@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 2,
-    "identityHash": "2948eb1468890ac72755ceffe8c93295",
+    "identityHash": "c37944660d25d787245a7a6d1ad13412",
     "entities": [
       {
         "tableName": "Actor",
@@ -70,7 +70,7 @@
       },
       {
         "tableName": "MovieAwardCrossRef",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`movieId` INTEGER NOT NULL, `awardId` INTEGER NOT NULL, PRIMARY KEY(`movieId`, `awardId`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`movieId` INTEGER NOT NULL, `awardId` INTEGER NOT NULL, PRIMARY KEY(`movieId`, `awardId`), FOREIGN KEY(`movieId`) REFERENCES `Movie`(`movieId`) ON UPDATE NO ACTION ON DELETE NO ACTION , FOREIGN KEY(`awardId`) REFERENCES `Award`(`awardId`) ON UPDATE NO ACTION ON DELETE NO ACTION )",
         "fields": [
           {
             "fieldPath": "movieId",
@@ -93,34 +93,30 @@
           ]
         },
         "indices": [],
-        "foreignKeys": []
-      },
-      {
-        "tableName": "MovieRoleCrossRef",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`movieId` INTEGER NOT NULL, `roleId` INTEGER NOT NULL, PRIMARY KEY(`movieId`, `roleId`))",
-        "fields": [
+        "foreignKeys": [
           {
-            "fieldPath": "movieId",
-            "columnName": "movieId",
-            "affinity": "INTEGER",
-            "notNull": true
+            "table": "Movie",
+            "onDelete": "NO ACTION",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "movieId"
+            ],
+            "referencedColumns": [
+              "movieId"
+            ]
           },
           {
-            "fieldPath": "roleId",
-            "columnName": "roleId",
-            "affinity": "INTEGER",
-            "notNull": true
+            "table": "Award",
+            "onDelete": "NO ACTION",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "awardId"
+            ],
+            "referencedColumns": [
+              "awardId"
+            ]
           }
-        ],
-        "primaryKey": {
-          "autoGenerate": false,
-          "columnNames": [
-            "movieId",
-            "roleId"
-          ]
-        },
-        "indices": [],
-        "foreignKeys": []
+        ]
       },
       {
         "tableName": "Movie",
@@ -256,7 +252,7 @@
       },
       {
         "tableName": "TicketCrossRef",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`userId` INTEGER NOT NULL, `showId` INTEGER NOT NULL, PRIMARY KEY(`userId`, `showId`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`userId` INTEGER NOT NULL, `showId` INTEGER NOT NULL, PRIMARY KEY(`userId`, `showId`), FOREIGN KEY(`userId`) REFERENCES `User`(`userId`) ON UPDATE CASCADE ON DELETE CASCADE , FOREIGN KEY(`showId`) REFERENCES `Show`(`showId`) ON UPDATE NO ACTION ON DELETE NO ACTION )",
         "fields": [
           {
             "fieldPath": "userId",
@@ -279,7 +275,30 @@
           ]
         },
         "indices": [],
-        "foreignKeys": []
+        "foreignKeys": [
+          {
+            "table": "User",
+            "onDelete": "CASCADE",
+            "onUpdate": "CASCADE",
+            "columns": [
+              "userId"
+            ],
+            "referencedColumns": [
+              "userId"
+            ]
+          },
+          {
+            "table": "Show",
+            "onDelete": "NO ACTION",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "showId"
+            ],
+            "referencedColumns": [
+              "showId"
+            ]
+          }
+        ]
       },
       {
         "tableName": "Trailer",
@@ -347,7 +366,7 @@
       },
       {
         "tableName": "WatchlistCrossRef",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`userId` INTEGER NOT NULL, `movieId` INTEGER NOT NULL, PRIMARY KEY(`userId`, `movieId`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`userId` INTEGER NOT NULL, `movieId` INTEGER NOT NULL, PRIMARY KEY(`userId`, `movieId`), FOREIGN KEY(`userId`) REFERENCES `User`(`userId`) ON UPDATE CASCADE ON DELETE CASCADE , FOREIGN KEY(`movieId`) REFERENCES `Movie`(`movieId`) ON UPDATE NO ACTION ON DELETE NO ACTION )",
         "fields": [
           {
             "fieldPath": "userId",
@@ -370,13 +389,36 @@
           ]
         },
         "indices": [],
-        "foreignKeys": []
+        "foreignKeys": [
+          {
+            "table": "User",
+            "onDelete": "CASCADE",
+            "onUpdate": "CASCADE",
+            "columns": [
+              "userId"
+            ],
+            "referencedColumns": [
+              "userId"
+            ]
+          },
+          {
+            "table": "Movie",
+            "onDelete": "NO ACTION",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "movieId"
+            ],
+            "referencedColumns": [
+              "movieId"
+            ]
+          }
+        ]
       }
     ],
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '2948eb1468890ac72755ceffe8c93295')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'c37944660d25d787245a7a6d1ad13412')"
     ]
   }
 }

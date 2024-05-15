@@ -139,15 +139,16 @@ fun TopBar(
         }
         Button(
             onClick = {
-                navController.navigate("USER_PROFILE_EDIT/${username}", ) {
-                    navController.graph.startDestinationRoute?.let { route ->
-                        popUpTo(route) {
-                            saveState = true
-                        }
-                    }
-                    launchSingleTop = true
-                    restoreState = true
-                }
+                navController.navigate("USER_PROFILE_EDIT/${username}", )
+//                {
+//                    navController.graph.startDestinationRoute?.let { route ->
+//                        popUpTo(route) {
+//                            saveState = true
+//                        }
+//                    }
+//                    launchSingleTop = true
+//                    restoreState = true
+//                }
             },
             colors = ButtonDefaults.outlinedButtonColors(containerColor = Color.Transparent)
         ){

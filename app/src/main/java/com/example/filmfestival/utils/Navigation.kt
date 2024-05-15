@@ -9,6 +9,7 @@ import androidx.navigation.navArgument
 import com.example.filmfestival.MainViewModel
 import com.example.filmfestival.screens.EditUser
 import com.example.filmfestival.screens.HomeScreen
+import com.example.filmfestival.screens.MovieDetails
 import com.example.filmfestival.screens.MovieSet
 import com.example.filmfestival.screens.UserProfile
 
@@ -33,6 +34,13 @@ fun CreateNavigationGraph(
         }
         composable(NavigationRoutes.MOVIE_SET.name) {
             MovieSet(navController = navController, viewModel = viewModel)
+        }
+        composable(
+            route = "${NavigationRoutes.MOVIE_DETAILS.name}/{movieId}",
+            arguments = listOf(navArgument(name = "movieId") { type = NavType.IntType})
+        ){ args ->
+            val movieId = args.arguments?.getInt("movieId") ?: 1
+            MovieDetails(navController = navController, viewModel = viewModel, movieId = movieId)
         }
         composable(NavigationRoutes.USER_PROFILE.name) {
             UserProfile(navController = navController, viewModel = viewModel)

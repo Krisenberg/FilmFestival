@@ -5,10 +5,13 @@ import android.util.Log
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -19,7 +22,9 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -43,9 +48,16 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.filmfestival.MainViewModel
 import com.example.filmfestival.composables.BottomNavBar
+import com.example.filmfestival.models.Actor
 import com.example.filmfestival.models.Movie
+import com.example.filmfestival.models.dto.MovieAllData
+import com.example.filmfestival.utils.NavigationRoutes
 import com.example.filmfestival.utils.fadingEdge
 import kotlinx.coroutines.flow.Flow
+import java.text.SimpleDateFormat
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+import java.util.Locale
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -55,16 +67,113 @@ fun MovieSet(
 ){
     Scaffold(
         bottomBar = { BottomNavBar(navController = navController) }
-    ){ paddingValues ->
-        Column (modifier = Modifier.padding(paddingValues)){
+    ) { paddingValues ->
 
+        val scope = rememberCoroutineScope()
+        val moviesIdPoster = remember { mutableStateOf<List<Triple<Int, String, String>>?>(null) }
+        val currentPage by remember { mutableIntStateOf(0) }
+
+        LaunchedEffect(scope) {
+            moviesIdPoster.value = viewModel.getMoviesIdTitlePoster()
         }
-//        val currentPage by remember { mutableIntStateOf(0) }
-//        val moviesFlow: Flow<List<Movie>> = viewModel.moviesOrderedByTitle
+//        val moviesFlow: Flow<List<Pair<Int, String>>> = viewModel.moviesIdPoster
 //        val movies by moviesFlow.collectAsState(initial = emptyList())
-////        val movies by viewModel.moviesOrderedByTitle.collectAsState(initial = emptyList())
-//
-//
+//        val movies by viewModel.moviesOrderedByTitle.collectAsState(initial = emptyList())
+
+        moviesIdPoster.value?.let { data ->
+            val pagerState = rememberPagerState(
+                initialPage = currentPage,
+                initialPageOffsetFraction = 0f
+            ) {
+                data.size
+            }
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues)
+            ) {
+                HorizontalPager(
+                    state = pagerState
+                ) { index ->
+                    val pageOffset =
+                        (pagerState.currentPage - index) + pagerState.currentPageOffsetFraction
+                    val matrix = remember {
+                        ColorMatrix()
+                    }
+                    val imageSize by animateFloatAsState(
+                        targetValue = if (pageOffset != 0.0f) 0.85f else 1f,
+                        animationSpec = tween(durationMillis = 200),
+                        label = "imageSizeFloat"
+                    )
+
+//                LaunchedEffect(key1 = imageSize) {
+//                    if(pageOffset != 0.0f) {
+//                        Log.d("TAG", "0f")
+//                        matrix.setToSaturation(0f)
+//                    } else {
+//                        Log.d("TAG", "1f")
+//                        matrix.setToSaturation(1f)
+//                    }
+//                }
+                    val topFade = Brush.verticalGradient(0f to Color.Transparent, 0.4f to Color.Red)
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .graphicsLayer {
+                                scaleX = imageSize
+                                scaleY = imageSize
+                            }
+                            .clickable ( enabled = true ) {
+                                navController.navigate(route = "${NavigationRoutes.MOVIE_DETAILS.name}/${data[index].first}")
+//                                navController.navigate("USER_PROFILE_EDIT/${username}", ) {
+//                                    navController.graph.startDestinationRoute?.let { route ->
+//                                        popUpTo(route) {
+//                                            saveState = true
+//                                        }
+//                                    }
+//                                    launchSingleTop = true
+//                                    restoreState = true
+//                                }
+                            },
+                        contentAlignment = Alignment.TopCenter
+                    ) {
+                        AsyncImage(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(1.dp)
+                                .clip(RoundedCornerShape(4.dp))
+                                .fadingEdge(topFade),
+                            model = ImageRequest
+                                .Builder(LocalContext.current)
+                                .data(data[index].third)
+                                .build(),
+                            contentDescription = "Poster of ${data[index].second}",
+                            colorFilter = ColorFilter.colorMatrix(matrix),
+                            contentScale = ContentScale.Crop
+                        )
+
+//                        Text(
+//                            modifier = Modifier.padding(top = 24.dp),
+//                            text = movies[index].title.uppercase(),
+//                            color = Color.White,
+//                            fontFamily = FontFamily(
+//                                Font(
+//                                    DeviceFontFamilyName("sans-serif-condensed"),
+//                                    weight = FontWeight.Medium
+//                                )
+//                            ),
+//                            fontSize = 40.sp,
+//                            lineHeight = 30.sp
+//                        )
+                    }
+                }
+            }
+        } ?: run {
+            // Show a loading indicator or placeholder while movieData is null
+            Text(text = "Waiting...")
+        }
+
+
 //        val pagerState = rememberPagerState(
 //            initialPage = currentPage,
 //            initialPageOffsetFraction = 0f
@@ -134,7 +243,7 @@ fun MovieSet(
 //                }
 //            }
 //        }
-
+//
 //        Column (
 //            modifier = Modifier
 //                .fillMaxSize()

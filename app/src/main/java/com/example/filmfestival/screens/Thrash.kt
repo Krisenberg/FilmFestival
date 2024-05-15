@@ -34,7 +34,7 @@
 //import com.example.filmfestival.MainViewModel
 //import com.example.filmfestival.composables.BottomNavBar
 //import com.example.filmfestival.models.Actor
-//import com.example.filmfestival.models.MovieAllData
+//import com.example.filmfestival.models.dto.MovieAllData
 //import kotlinx.coroutines.ExperimentalCoroutinesApi
 //import kotlinx.coroutines.GlobalScope
 //import kotlinx.coroutines.launch
