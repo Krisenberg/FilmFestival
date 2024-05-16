@@ -21,15 +21,16 @@ import androidx.navigation.NavController
 import com.example.filmfestival.MainViewModel
 import com.example.filmfestival.composables.BottomNavBar
 import com.example.filmfestival.ui.theme.WhiteText
+import com.example.filmfestival.utils.NavigationHelper
 
 @Composable
 fun NewsScreen(
-    navController: NavController,
+    navHelper: NavigationHelper,
     viewModel: MainViewModel,
     news: News
 ){
     Scaffold(
-        bottomBar = { BottomNavBar(navController = navController) }
+        bottomBar = { BottomNavBar(navHelper = navHelper) }
     ){
         paddingValues ->
         Column (

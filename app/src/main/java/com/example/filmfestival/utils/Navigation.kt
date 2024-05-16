@@ -28,22 +28,24 @@ fun CreateNavigationGraph(
     navController: NavHostController,
     viewModel: MainViewModel
 ){
+    val navHelper = NavigationHelper(navController)
+
     NavHost(navController = navController, startDestination = NavigationRoutes.HOME_SCREEN.name) {
         composable(NavigationRoutes.HOME_SCREEN.name) {
-            HomeScreen(navController = navController, viewModel = viewModel)
+            HomeScreen(navHelper = navHelper, viewModel = viewModel)
         }
         composable(NavigationRoutes.MOVIE_SET.name) {
-            MovieSet(navController = navController, viewModel = viewModel)
+            MovieSet(navHelper = navHelper, viewModel = viewModel)
         }
         composable(
             route = "${NavigationRoutes.MOVIE_DETAILS.name}/{movieId}",
             arguments = listOf(navArgument(name = "movieId") { type = NavType.IntType})
         ){ args ->
             val movieId = args.arguments?.getInt("movieId") ?: 1
-            MovieDetails(navController = navController, viewModel = viewModel, movieId = movieId)
+            MovieDetails(navHelper = navHelper, viewModel = viewModel, movieId = movieId)
         }
         composable(NavigationRoutes.USER_PROFILE.name) {
-            UserProfile(navController = navController, viewModel = viewModel)
+            UserProfile(navHelper = navHelper, viewModel = viewModel)
         }
         composable(NavigationRoutes.NEWS_DETAILS.name){
             //TODO - navgiation tutorial with arguments
@@ -55,7 +57,7 @@ fun CreateNavigationGraph(
             arguments = listOf(navArgument("username") { type = NavType.StringType })
         ) { backStackEntry ->
             val username = backStackEntry.arguments?.getString("username") ?: " "
-            EditUser(navController = navController, viewModel = viewModel, username = username)
+            EditUser(navHelper = navHelper, viewModel = viewModel, username = username)
         }
     }
 }

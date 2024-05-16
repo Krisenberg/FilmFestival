@@ -51,6 +51,7 @@ import com.example.filmfestival.composables.BottomNavBar
 import com.example.filmfestival.models.Actor
 import com.example.filmfestival.models.Movie
 import com.example.filmfestival.models.dto.MovieAllData
+import com.example.filmfestival.utils.NavigationHelper
 import com.example.filmfestival.utils.NavigationRoutes
 import com.example.filmfestival.utils.fadingEdge
 import kotlinx.coroutines.flow.Flow
@@ -62,11 +63,11 @@ import java.util.Locale
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun MovieSet(
-    navController: NavController,
+    navHelper: NavigationHelper,
     viewModel: MainViewModel
 ){
     Scaffold(
-        bottomBar = { BottomNavBar(navController = navController) }
+        bottomBar = { BottomNavBar(navHelper = navHelper) }
     ) { paddingValues ->
 
         val scope = rememberCoroutineScope()
@@ -124,7 +125,8 @@ fun MovieSet(
                                 scaleY = imageSize
                             }
                             .clickable ( enabled = true ) {
-                                navController.navigate(route = "${NavigationRoutes.MOVIE_DETAILS.name}/${data[index].first}")
+//                                navController.navigate(route = "${NavigationRoutes.MOVIE_DETAILS.name}/${data[index].first}")
+                                navHelper.navigateWithId(NavigationRoutes.MOVIE_DETAILS, data[index].first)
 //                                navController.navigate("USER_PROFILE_EDIT/${username}", ) {
 //                                    navController.graph.startDestinationRoute?.let { route ->
 //                                        popUpTo(route) {

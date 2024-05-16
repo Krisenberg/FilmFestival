@@ -27,14 +27,15 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.navigation.NavController
 import com.example.filmfestival.ui.theme.LightBackground
 import com.example.filmfestival.ui.theme.WhiteText
+import com.example.filmfestival.utils.NavigationHelper
 
 @Composable
 fun HomeScreen(
-    navController: NavController,
+    navHelper: NavigationHelper,
     viewModel: MainViewModel
 ){
     Scaffold(
-        bottomBar = { BottomNavBar(navController = navController) }
+        bottomBar = { BottomNavBar(navHelper = navHelper) }
     ){
         paddingValues ->
         Column (

@@ -2,8 +2,10 @@ package com.example.filmfestival
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.NavController
 import com.example.filmfestival.data.MovieDao
 import com.example.filmfestival.data.MovieRepository
+import com.example.filmfestival.utils.NavigationRoutes
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.async
 import javax.inject.Inject
@@ -11,7 +13,8 @@ import javax.inject.Inject
 @HiltViewModel
 class MainViewModel @Inject constructor(
     private val movieDao: MovieDao,
-    private val movieRepository: MovieRepository
+    private val movieRepository: MovieRepository,
+//    private val navController: NavController
 ): ViewModel() {
 
 //    private val _actors = MutableLiveData<List<Actor>>()
@@ -20,6 +23,10 @@ class MainViewModel @Inject constructor(
 //    val moviesOrderedByTitle: Flow<List<Movie>> = movieRepository.allMoviesOrderedByTitle
 //    val moviesIdPoster = viewModelScope.async {
 //        movieRepository.moviesIdPoster()
+//    }
+
+//    fun navigateTo(navigationRoute: NavigationRoutes) {
+//        navController.nav
 //    }
 
     suspend fun getMoviesIdTitlePoster() = movieRepository.moviesIdTitlePoster()

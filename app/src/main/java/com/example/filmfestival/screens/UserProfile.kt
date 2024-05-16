@@ -46,17 +46,18 @@ import androidx.navigation.NavController
 import com.example.filmfestival.MainViewModel
 import com.example.filmfestival.R
 import com.example.filmfestival.composables.BottomNavBar
+import com.example.filmfestival.utils.NavigationHelper
 import com.example.filmfestival.utils.NavigationRoutes
 
 
 @Composable
 fun UserProfile(
-    navController: NavController,
+    navHelper: NavigationHelper,
     viewModel: MainViewModel,
     username: String = "Jan Kowalski"
 ){
     Scaffold(
-        bottomBar = { BottomNavBar(navController = navController) }
+        bottomBar = { BottomNavBar(navHelper = navHelper) }
     ){ paddingValues ->
         var selectedTabIndex by remember {
             mutableStateOf(0)
@@ -67,7 +68,8 @@ fun UserProfile(
                 .padding(paddingValues)
         ){
             TopBar(
-                navController = navController,
+                navHelper = navHelper,
+//                navController = navController,
                 modifier = Modifier
                     .padding(10.dp),
                 username = username
@@ -112,7 +114,7 @@ fun UserProfile(
 
 @Composable
 fun TopBar(
-    navController: NavController,
+    navHelper: NavigationHelper,
     modifier: Modifier = Modifier,
     username : String
 ) {
@@ -123,10 +125,7 @@ fun TopBar(
             .fillMaxWidth()
     ) {
         Button(
-            onClick = {
-                navController.previousBackStackEntry?.savedStateHandle
-                navController.popBackStack()
-            },
+            onClick = { navHelper.goBack() },
             colors = ButtonDefaults.outlinedButtonColors(containerColor = Color.Transparent)
         ) {
             Icon(
@@ -139,7 +138,8 @@ fun TopBar(
         }
         Button(
             onClick = {
-                navController.navigate("USER_PROFILE_EDIT/${username}", )
+                navHelper.navigateWithStr(NavigationRoutes.USER_PROFILE_EDIT, username)
+//                navController.navigate("USER_PROFILE_EDIT/${username}", )
 //                {
 //                    navController.graph.startDestinationRoute?.let { route ->
 //                        popUpTo(route) {

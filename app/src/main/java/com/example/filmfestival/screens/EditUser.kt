@@ -37,16 +37,17 @@ import androidx.navigation.NavController
 import com.example.filmfestival.MainViewModel
 import com.example.filmfestival.R
 import com.example.filmfestival.composables.BottomNavBar
+import com.example.filmfestival.utils.NavigationHelper
 
 @Composable
 fun EditUser(
-    navController: NavController,
+    navHelper: NavigationHelper,
     viewModel: MainViewModel,
     username : String,
     modifier: Modifier = Modifier
 ){
     Scaffold(
-        bottomBar = { BottomNavBar(navController = navController) }
+        bottomBar = { BottomNavBar(navHelper = navHelper) }
     ){ paddingValues ->
         Column (
             modifier = Modifier
@@ -62,8 +63,9 @@ fun EditUser(
             ) {
                 Button(
                     onClick = {
-                        navController.previousBackStackEntry?.savedStateHandle
-                        navController.popBackStack()
+//                        navController.previousBackStackEntry?.savedStateHandle
+//                        navController.popBackStack()
+                        navHelper.goBack()
                     },
                     colors = ButtonDefaults.outlinedButtonColors(containerColor = Color.Transparent)
                 ) {
