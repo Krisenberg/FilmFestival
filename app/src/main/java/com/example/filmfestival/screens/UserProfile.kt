@@ -27,9 +27,12 @@ import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -43,9 +46,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import coil.compose.AsyncImage
 import com.example.filmfestival.MainViewModel
 import com.example.filmfestival.R
 import com.example.filmfestival.composables.BottomNavBar
+import com.example.filmfestival.models.Actor
+import com.example.filmfestival.models.Movie
+import com.example.filmfestival.models.dto.MovieAllData
 import com.example.filmfestival.utils.NavigationHelper
 import com.example.filmfestival.utils.NavigationRoutes
 
@@ -60,8 +67,16 @@ fun UserProfile(
         bottomBar = { BottomNavBar(navHelper = navHelper) }
     ){ paddingValues ->
         var selectedTabIndex by remember {
-            mutableStateOf(0)
+            mutableIntStateOf(0)
         }
+
+        val movies = remember { mutableStateOf<List<Movie>?>(null) }
+        val scope = rememberCoroutineScope()
+
+        LaunchedEffect(scope) {
+            movies.value = viewModel.getUserWatchlistMovies(1)
+        }
+
         Column (
             modifier = Modifier
                 .fillMaxSize()
@@ -89,15 +104,14 @@ fun UserProfile(
             }
             Spacer(modifier = Modifier.height(15.dp))
             when(selectedTabIndex) {
-                0 -> Watchlist(
-                    watchlist = listOf(
-                        Pair(painterResource(id = R.drawable.dune), "Dune: Part Two"),
-                        Pair(painterResource(id = R.drawable.avatar), "Avatar"),
-                        Pair(painterResource(id = R.drawable.dune), "Dune: Part Two"),
-                        Pair(painterResource(id = R.drawable.avatar), "Avatar")
-                    ),
-                    modifier = Modifier.fillMaxWidth()
-                )
+                0 -> { movies.value?.let { data ->
+                        Watchlist(
+                            watchlist = data,
+                            modifier = Modifier.fillMaxWidth()
+                        )} ?: run {
+                        // Show a loading indicator or placeholder while movieData is null
+                        Text(text = "Nothing is here")
+                    }}
                 1 -> Tickets(
                     tickets = listOf(
                         Ticket("Dune: Part Two", "22.07.2024", "17:30", painterResource(id = R.drawable.dune)),
@@ -252,7 +266,7 @@ fun TabView(
 
 @Composable
 fun Watchlist(
-    watchlist: List<Pair<Painter, String>>,
+    watchlist: List<Movie>,
     modifier: Modifier = Modifier
 ) {
     LazyColumn(modifier = modifier.fillMaxSize()) {
@@ -266,10 +280,10 @@ fun Watchlist(
 }
 
 @Composable
-fun MovieRow(movie: Pair<Painter, String>) {
+fun MovieRow(movie: Movie) {
     Row(verticalAlignment = Alignment.CenterVertically) {
-        Image(
-            painter = movie.first,
+        AsyncImage(
+            model = movie.moviePoster,
             contentDescription = null,
             contentScale = ContentScale.Crop,
             modifier = Modifier
@@ -278,7 +292,7 @@ fun MovieRow(movie: Pair<Painter, String>) {
         )
         Spacer(modifier = Modifier.width(16.dp))
         Text(
-            text = movie.second,
+            text = movie.title,
             fontSize = 20.sp,
             modifier = Modifier.weight(1f)
         )

@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import com.example.filmfestival.data.MovieDao
 import com.example.filmfestival.data.MovieRepository
+import com.example.filmfestival.data.UserRepository
 import com.example.filmfestival.utils.NavigationRoutes
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.async
@@ -14,6 +15,7 @@ import javax.inject.Inject
 class MainViewModel @Inject constructor(
     private val movieDao: MovieDao,
     private val movieRepository: MovieRepository,
+    private val userRepository: UserRepository
 //    private val navController: NavController
 ): ViewModel() {
 
@@ -45,6 +47,10 @@ class MainViewModel @Inject constructor(
 //        }
 //    }
     suspend fun getActors() = movieDao.getActors()
+
+    suspend fun getUserWatchlistMovies(userId: Int) = userRepository.getUserWatchlistMovies(userId)
+    suspend fun addMovieToUsersWatchlist(userId: Int, movieId: Int) = userRepository.addToUsersWatchlist(userId, movieId)
+    suspend fun deleteMovieFromUsersWatchlist(userId: Int, movieId: Int) = userRepository.deleteFromUsersWatchlist(userId, movieId)
 
 //    val movie = Movie(1,"Dune: Part Two","https://image.tmdb.org/t/p/original/5aUVLiqcW0kFTBfGsCWjvLas91w.jpg",
 //        "https://ca-times.brightspotcdn.com/dims4/default/c04179b/2147483647/strip/true/crop/2700x1580+0+0/resize/1200x702!/quality/75/?url=https%3A%2F%2Fcalifornia-times-brightspot.s3.amazonaws.com%2Fdc%2F0c%2F962ffd064d33a015a95c54b07c80%2Fdun2-27986r-jpv3.jpg",

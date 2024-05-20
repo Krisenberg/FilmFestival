@@ -98,6 +98,10 @@ object DatabaseModule {
     @Singleton
     @Provides
     fun provideMovieDao(database: MovieDatabase) = database.movieDao()
+
+    @Singleton
+    @Provides
+    fun provideUserDao(database: MovieDatabase) = database.userDao()
 //
 //    @Singleton
 //    @Provides
@@ -111,7 +115,7 @@ object DatabaseModule {
 //    @Provides
 //    fun provideTrailerDao(database: MovieDatabase) = database.trailerDao()
 //
-//    @Singleton
-//    @Provides
-//    fun provideWatchlistDao(database: MovieDatabase) = database.watchlistDao()
+    @Singleton
+    @Provides
+    fun provideWatchlistDao(database: MovieDatabase) = database.watchlistDao()
 }

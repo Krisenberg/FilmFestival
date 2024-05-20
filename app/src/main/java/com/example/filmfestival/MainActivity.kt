@@ -5,6 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.rememberNavController
+import com.example.compose.AppTheme
 import com.example.filmfestival.ui.theme.FilmFestivalTheme
 import com.example.filmfestival.utils.CreateNavigationGraph
 import dagger.hilt.android.AndroidEntryPoint
@@ -14,7 +15,7 @@ class MainActivity: ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            FilmFestivalTheme {
+            AppTheme {
                 val navController = rememberNavController()
                 val viewModel = hiltViewModel<MainViewModel>()
                 CreateNavigationGraph(navController = navController, viewModel = viewModel)

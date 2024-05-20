@@ -42,7 +42,8 @@ abstract class MovieDatabase: RoomDatabase() {
 //    abstract fun showDao(): ShowDao
 //    abstract fun ticketDao(): TicketDao
 //    abstract fun trailerDao(): TrailerDao
-//    abstract fun watchlistDao(): WatchlistDao
+    abstract fun watchlistDao(): WatchlistDao
+    abstract fun userDao(): UserDao
     abstract fun filmFestivalDao(): FilmFestivalDao
 
     companion object {

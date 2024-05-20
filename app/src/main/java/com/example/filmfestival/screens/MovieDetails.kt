@@ -25,14 +25,17 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.ChipDefaults
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.materialIcon
 import androidx.compose.material3.AssistChip
+import androidx.compose.material3.AssistChipDefaults
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ChipColors
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledIconButton
@@ -175,11 +178,12 @@ fun MovieDetails(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .wrapContentHeight()
+                                .padding(top = 8.dp)
                         ){
                             Text(
                                 text = data.movie.title.uppercase(),
                                 fontSize = 40.sp,
-                                color = WhiteText,
+                                color = MaterialTheme.colorScheme.onBackground,
                                 modifier = Modifier.align(Alignment.Center)
                             )
                         }
@@ -216,10 +220,13 @@ fun MovieDetails(
                                             Text(
                                                 text = it,
                                                 fontSize = 20.sp,
-                                                color = WhiteText,
                                                 modifier = Modifier.padding(4.dp)
                                             )
-                                        }
+                                        },
+                                        colors = AssistChipDefaults.assistChipColors(
+                                            containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                                            labelColor = MaterialTheme.colorScheme.onSecondaryContainer
+                                        )
                                     )
                                 }
                             }
@@ -227,7 +234,7 @@ fun MovieDetails(
                     }
 
                     item {
-                        Box(modifier = Modifier.fillMaxWidth()){
+                        Box(modifier = Modifier.fillMaxWidth().padding(top = 8.dp, bottom = 8.dp)){
                             Divider(
                                 modifier = Modifier
                                     .fillMaxWidth(0.95f)
@@ -343,7 +350,7 @@ fun MovieDetails(
                         ){
                             Text(
                                 text = data.movie.title,
-                                color = Color.White
+                                color = MaterialTheme.colorScheme.onBackground
                             )
                         }
                     },
@@ -355,7 +362,7 @@ fun MovieDetails(
                             Icon(
                                 imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                                 contentDescription = "Back arrow",
-                                tint = Color.White
+                                tint = MaterialTheme.colorScheme.onBackground
                             )
                         }
                     },
@@ -366,21 +373,27 @@ fun MovieDetails(
 
 //                        val color = if (isPressed) Color.Blue else Color.Yellow
                         Button(
-                            onClick = {},
-                            colors = ButtonDefaults.buttonColors(containerColor = Color(red = 255, blue = 255, green = 255, alpha = 150)),
+                            onClick = { scope.launch {
+                                viewModel.addMovieToUsersWatchlist(1,movieId)
+                            }},
+                            colors = ButtonDefaults.buttonColors(
+//                                containerColor = Color(red = 255, blue = 255, green = 255, alpha = 150)
+                                containerColor = MaterialTheme.colorScheme.primaryContainer,
+                                contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+                            ),
                             modifier = Modifier.padding(end = 8.dp)
                         ) {
                             Icon(
                                 imageVector = Icons.Filled.Add,
                                 contentDescription = "Add to watchlist",
-                                tint = Color.White,
+//                                tint = Color.White,
                                 modifier = Modifier
                                     .padding(end = 4.dp)
 //                                    .offset(x = (-4).dp)
                             )
                             Text(
                                 text = "Watchlist",
-                                color = Color.White
+//                                color = Color.White
                             )
                         }
 //                        Button(
@@ -413,7 +426,7 @@ fun MovieDetails(
 //                            )
 //                        }
                     },
-                    colors = if (makeTopBarTransparent) TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent.copy(alpha = 0.15f)) else TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.background),
+                    colors = if (makeTopBarTransparent) TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.background.copy(alpha = 0.25f)) else TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.background),
                     modifier = Modifier.align(Alignment.TopCenter)
                 )
             }
