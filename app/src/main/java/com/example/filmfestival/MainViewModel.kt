@@ -6,9 +6,14 @@ import androidx.navigation.NavController
 import com.example.filmfestival.data.MovieDao
 import com.example.filmfestival.data.MovieRepository
 import com.example.filmfestival.data.UserRepository
+import com.example.filmfestival.models.Show
 import com.example.filmfestival.utils.NavigationRoutes
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.async
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.LocalTime
+import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 
 @HiltViewModel
@@ -35,6 +40,19 @@ class MainViewModel @Inject constructor(
 
     suspend fun getMovieAllData(movieId: Int) = movieRepository.movieAllData(movieId)
 
+    fun groupShowsByDate(shows: List<Show>): Map<LocalDate, List<Pair<LocalTime, Show>>> {
+        return shows.groupBy {
+            LocalDateTime.parse(it.dateTime, DateTimeFormatter.ISO_DATE_TIME).toLocalDate()
+        }.mapValues { entry ->
+            entry.value.map { show ->
+                Pair(
+                    LocalDateTime.parse(show.dateTime, DateTimeFormatter.ISO_DATE_TIME).toLocalTime(),
+                    show
+                )
+            }
+        }
+    }
+
 //    val actors = viewModelScope.async {
 //        movieDao.getActors()
 //    }
@@ -49,8 +67,10 @@ class MainViewModel @Inject constructor(
     suspend fun getActors() = movieDao.getActors()
 
     suspend fun getUserWatchlistMovies(userId: Int) = userRepository.getUserWatchlistMovies(userId)
+
+    suspend fun checkIfMovieIsOnUsersWatchlist(userId: Int, movieId: Int) = userRepository.checkIfMovieIsOnUsersWatchlist(userId, movieId)
     suspend fun addMovieToUsersWatchlist(userId: Int, movieId: Int) = userRepository.addToUsersWatchlist(userId, movieId)
-    suspend fun deleteMovieFromUsersWatchlist(userId: Int, movieId: Int) = userRepository.deleteFromUsersWatchlist(userId, movieId)
+    suspend fun removeMovieFromUsersWatchlist(userId: Int, movieId: Int) = userRepository.removeFromUsersWatchlist(userId, movieId)
 
 //    val movie = Movie(1,"Dune: Part Two","https://image.tmdb.org/t/p/original/5aUVLiqcW0kFTBfGsCWjvLas91w.jpg",
 //        "https://ca-times.brightspotcdn.com/dims4/default/c04179b/2147483647/strip/true/crop/2700x1580+0+0/resize/1200x702!/quality/75/?url=https%3A%2F%2Fcalifornia-times-brightspot.s3.amazonaws.com%2Fdc%2F0c%2F962ffd064d33a015a95c54b07c80%2Fdun2-27986r-jpv3.jpg",

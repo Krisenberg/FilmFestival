@@ -1,5 +1,6 @@
 package com.example.filmfestival.screens
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
@@ -14,10 +15,14 @@ import com.example.filmfestival.composables.BottomNavBar
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.draw.clip
@@ -29,6 +34,7 @@ import com.example.filmfestival.ui.theme.LightBackground
 import com.example.filmfestival.ui.theme.WhiteText
 import com.example.filmfestival.utils.NavigationHelper
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun HomeScreen(
     navHelper: NavigationHelper,
@@ -76,16 +82,27 @@ fun HomeScreen(
                         end = 24.dp
                     )
             )
-            LazyRow(
-                modifier = Modifier
-                    .padding(paddingValues)
-            )
-            {
-                items(newsList) { news ->
-                    NewsItem(news)
-                    Spacer(modifier = Modifier.width(16.dp))
-                }
+            val currentPage by remember { mutableIntStateOf(0) }
+            val pagerState = rememberPagerState(
+                initialPage = currentPage,
+                initialPageOffsetFraction = 0f
+            ) {
+                newsList.size
             }
+            HorizontalPager(state = pagerState) { index ->
+                NewsItem(newsList[index])
+                Spacer(modifier = Modifier.width(16.dp))
+            }
+//            LazyRow(
+//                modifier = Modifier
+//                    .padding(paddingValues)
+//            )
+//            {
+//                items(newsList) { news ->
+//                    NewsItem(news)
+//                    Spacer(modifier = Modifier.width(16.dp))
+//                }
+//            }
         }
 
     }

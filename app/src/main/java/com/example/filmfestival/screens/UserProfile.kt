@@ -2,6 +2,7 @@ package com.example.filmfestival.screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,6 +15,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
@@ -105,13 +107,26 @@ fun UserProfile(
             Spacer(modifier = Modifier.height(15.dp))
             when(selectedTabIndex) {
                 0 -> { movies.value?.let { data ->
+                    if (data.isNotEmpty()) {
                         Watchlist(
                             watchlist = data,
+                            navHelper = navHelper,
                             modifier = Modifier.fillMaxWidth()
-                        )} ?: run {
+                        )
+                    } else {
+                        Box( modifier = Modifier.fillMaxSize()){
+                            Text (
+                                text = "Your watchlist is empty",
+                                fontSize = 20.sp,
+                                modifier = Modifier
+                                    .align(alignment = Alignment.Center)
+                            )
+                        }
+                    }} ?: run {
                         // Show a loading indicator or placeholder while movieData is null
-                        Text(text = "Nothing is here")
-                    }}
+                        Text(text = "Fetching the data from database...")
+                    }
+                }
                 1 -> Tickets(
                     tickets = listOf(
                         Ticket("Dune: Part Two", "22.07.2024", "17:30", painterResource(id = R.drawable.dune)),
@@ -267,11 +282,12 @@ fun TabView(
 @Composable
 fun Watchlist(
     watchlist: List<Movie>,
+    navHelper: NavigationHelper,
     modifier: Modifier = Modifier
 ) {
     LazyColumn(modifier = modifier.fillMaxSize()) {
         items(watchlist.size) { index ->
-            MovieRow(movie = watchlist[index])
+            MovieRow(movie = watchlist[index], navHelper = navHelper)
             if (index < watchlist.size - 1) {
                 Spacer(modifier = Modifier.height(15.dp))
             }
@@ -280,8 +296,13 @@ fun Watchlist(
 }
 
 @Composable
-fun MovieRow(movie: Movie) {
-    Row(verticalAlignment = Alignment.CenterVertically) {
+fun MovieRow(movie: Movie, navHelper: NavigationHelper) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier.clickable {
+            navHelper.navigateWithId(NavigationRoutes.MOVIE_DETAILS, movie.movieId)
+        }
+    ) {
         AsyncImage(
             model = movie.moviePoster,
             contentDescription = null,

@@ -36,15 +36,11 @@ import com.example.filmfestival.models.crossRefs.WatchlistCrossRef
 )
 abstract class MovieDatabase: RoomDatabase() {
 
-//    abstract fun awardDao(): AwardDao
-//    abstract fun castDao(): CastDao
     abstract fun movieDao(): MovieDao
-//    abstract fun showDao(): ShowDao
-//    abstract fun ticketDao(): TicketDao
-//    abstract fun trailerDao(): TrailerDao
+    abstract fun showDao(): ShowDao
+    abstract fun ticketDao(): TicketDao
     abstract fun watchlistDao(): WatchlistDao
     abstract fun userDao(): UserDao
-    abstract fun filmFestivalDao(): FilmFestivalDao
 
     companion object {
         val migration1To2 = object : Migration(1, 2) {

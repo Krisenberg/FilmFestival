@@ -30,10 +30,4 @@ class MovieRepository @Inject constructor(
             trailers = movieWithTrailers.trailers
         )
     }
-
-
-//    suspend fun moviesAllData(movieId: Int) {
-//        val movieWithActors = movieDao.getMoviesWithActorsAndStarring(movieId)
-//        movieWithActors.actors
-//    }
 }

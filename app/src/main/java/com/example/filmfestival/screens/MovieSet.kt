@@ -77,9 +77,6 @@ fun MovieSet(
         LaunchedEffect(scope) {
             moviesIdPoster.value = viewModel.getMoviesIdTitlePoster()
         }
-//        val moviesFlow: Flow<List<Pair<Int, String>>> = viewModel.moviesIdPoster
-//        val movies by moviesFlow.collectAsState(initial = emptyList())
-//        val movies by viewModel.moviesOrderedByTitle.collectAsState(initial = emptyList())
 
         moviesIdPoster.value?.let { data ->
             val pagerState = rememberPagerState(
@@ -106,16 +103,6 @@ fun MovieSet(
                         animationSpec = tween(durationMillis = 200),
                         label = "imageSizeFloat"
                     )
-
-//                LaunchedEffect(key1 = imageSize) {
-//                    if(pageOffset != 0.0f) {
-//                        Log.d("TAG", "0f")
-//                        matrix.setToSaturation(0f)
-//                    } else {
-//                        Log.d("TAG", "1f")
-//                        matrix.setToSaturation(1f)
-//                    }
-//                }
                     val topFade = Brush.verticalGradient(0f to Color.Transparent, 0.4f to Color.Red)
                     Box(
                         modifier = Modifier
@@ -153,20 +140,6 @@ fun MovieSet(
                             colorFilter = ColorFilter.colorMatrix(matrix),
                             contentScale = ContentScale.Crop
                         )
-
-//                        Text(
-//                            modifier = Modifier.padding(top = 24.dp),
-//                            text = movies[index].title.uppercase(),
-//                            color = Color.White,
-//                            fontFamily = FontFamily(
-//                                Font(
-//                                    DeviceFontFamilyName("sans-serif-condensed"),
-//                                    weight = FontWeight.Medium
-//                                )
-//                            ),
-//                            fontSize = 40.sp,
-//                            lineHeight = 30.sp
-//                        )
                     }
                 }
             }
@@ -174,89 +147,5 @@ fun MovieSet(
             // Show a loading indicator or placeholder while movieData is null
             Text(text = "Waiting...")
         }
-
-
-//        val pagerState = rememberPagerState(
-//            initialPage = currentPage,
-//            initialPageOffsetFraction = 0f
-//        ) {
-//            movies.size
-//        }
-//        Column (
-//            modifier = Modifier
-//                .fillMaxSize()
-//                .padding(paddingValues)
-//        ) {
-//            HorizontalPager(
-//                state = pagerState
-//            ) { index ->
-//                val pageOffset = (pagerState.currentPage - index) + pagerState.currentPageOffsetFraction
-//                val matrix = remember {
-//                    ColorMatrix()
-//                }
-//                val imageSize by animateFloatAsState(
-//                    targetValue = if(pageOffset != 0.0f) 0.85f else 1f,
-//                    animationSpec = tween(durationMillis = 200),
-//                    label = "imageSizeFloat"
-//                )
-//
-////                LaunchedEffect(key1 = imageSize) {
-////                    if(pageOffset != 0.0f) {
-////                        Log.d("TAG", "0f")
-////                        matrix.setToSaturation(0f)
-////                    } else {
-////                        Log.d("TAG", "1f")
-////                        matrix.setToSaturation(1f)
-////                    }
-////                }
-//                val topFade = Brush.verticalGradient(0f to Color.Transparent, 0.4f to Color.Red)
-//                Box(
-//                    modifier = Modifier
-//                        .fillMaxSize()
-//                        .graphicsLayer {
-//                            scaleX = imageSize
-//                            scaleY = imageSize
-//                        },
-//                    contentAlignment = Alignment.TopCenter
-//                ){
-//                    AsyncImage(
-//                        modifier = Modifier
-//                            .fillMaxSize()
-//                            .padding(1.dp)
-//                            .clip(RoundedCornerShape(4.dp))
-//                            .fadingEdge(topFade),
-//                        model = ImageRequest
-//                            .Builder(LocalContext.current)
-//                            .data(movies[index].posterUrl)
-//                            .build(),
-//                        contentDescription = "Poster of ${movies[index].title}",
-//                        colorFilter = ColorFilter.colorMatrix(matrix),
-//                        contentScale = ContentScale.Crop
-//                    )
-//
-//                    Text(
-//                        modifier = Modifier.padding(top = 24.dp),
-//                        text = movies[index].title.uppercase(),
-//                        color = Color.White,
-//                        fontFamily = FontFamily(Font(DeviceFontFamilyName("sans-serif-condensed"), weight = FontWeight.Medium)),
-//                        fontSize = 40.sp,
-//                        lineHeight = 30.sp
-//                    )
-//                }
-//            }
-//        }
-//
-//        Column (
-//            modifier = Modifier
-//                .fillMaxSize()
-//                .padding(paddingValues)
-//        ){
-//            val movies = viewModel.moviesOrderedByTitle.collectAsState(initial = emptyList())
-//            val pagerState = rememberPagerState ()
-//            Text(
-//                text = "MOVIES HERE",
-//                fontSize = 30.sp
-//            )
-//        }
     }
 }
