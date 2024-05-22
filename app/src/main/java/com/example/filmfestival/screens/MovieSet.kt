@@ -25,6 +25,7 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -72,7 +73,7 @@ fun MovieSet(
 
         val scope = rememberCoroutineScope()
         val moviesIdPoster = remember { mutableStateOf<List<Triple<Int, String, String>>?>(null) }
-        val currentPage by remember { mutableIntStateOf(0) }
+//        val currentPage by rememberSaveable { mutableIntStateOf(0) }
 
         LaunchedEffect(scope) {
             moviesIdPoster.value = viewModel.getMoviesIdTitlePoster()
@@ -80,7 +81,7 @@ fun MovieSet(
 
         moviesIdPoster.value?.let { data ->
             val pagerState = rememberPagerState(
-                initialPage = currentPage,
+                initialPage = 0,
                 initialPageOffsetFraction = 0f
             ) {
                 data.size
@@ -111,9 +112,12 @@ fun MovieSet(
                                 scaleX = imageSize
                                 scaleY = imageSize
                             }
-                            .clickable ( enabled = true ) {
+                            .clickable(enabled = true) {
 //                                navController.navigate(route = "${NavigationRoutes.MOVIE_DETAILS.name}/${data[index].first}")
-                                navHelper.navigateWithId(NavigationRoutes.MOVIE_DETAILS, data[index].first)
+                                navHelper.navigateWithId(
+                                    NavigationRoutes.MOVIE_DETAILS,
+                                    data[index].first
+                                )
 //                                navController.navigate("USER_PROFILE_EDIT/${username}", ) {
 //                                    navController.graph.startDestinationRoute?.let { route ->
 //                                        popUpTo(route) {

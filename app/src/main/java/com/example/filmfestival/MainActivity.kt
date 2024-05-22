@@ -8,6 +8,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.compose.AppTheme
 import com.example.filmfestival.ui.theme.FilmFestivalTheme
 import com.example.filmfestival.utils.CreateNavigationGraph
+import com.example.filmfestival.utils.SoundManager
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -19,13 +20,6 @@ class MainActivity: ComponentActivity() {
                 val navController = rememberNavController()
                 val viewModel = hiltViewModel<MainViewModel>()
                 CreateNavigationGraph(navController = navController, viewModel = viewModel)
-//                viewModel.insertData()
-//                Surface(
-//                    modifier = Modifier.fillMaxSize(),
-//                    color = MaterialTheme.colorScheme.background
-//                ) {
-//                    App()
-//                }
             }
         }
     }

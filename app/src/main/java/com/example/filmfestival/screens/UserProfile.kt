@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -35,6 +36,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -72,9 +74,7 @@ fun UserProfile(
     Scaffold(
         bottomBar = { BottomNavBar(navHelper = navHelper) }
     ){ paddingValues ->
-        var selectedTabIndex by remember {
-            mutableIntStateOf(0)
-        }
+        var selectedTabIndex by rememberSaveable { mutableIntStateOf(0) }
 
         val movies = remember { mutableStateOf<List<Movie>?>(null) }
         val scope = rememberCoroutineScope()
@@ -107,10 +107,13 @@ fun UserProfile(
                 texts = listOf(
                     "Watchlist",
                     "Tickets"
-                )
-            ) {
-                selectedTabIndex = it
-            }
+                ),
+                currentIndex = selectedTabIndex,
+                updateTabIndex = { newIndex: Int -> selectedTabIndex = newIndex}
+            )
+//            ) {
+//                selectedTabIndex = it
+//            }
             Spacer(modifier = Modifier.height(15.dp))
             when(selectedTabIndex) {
                 0 -> { movies.value?.let { data ->
@@ -252,10 +255,11 @@ fun RoundImage(
 fun TabView(
     modifier: Modifier = Modifier,
     texts: List<String>,
-    onTabSelected: (selectedIndex : Int) -> Unit
+    currentIndex: Int,
+    updateTabIndex: (selectedIndex : Int) -> Unit
 ) {
     var selectedTabIndex by remember {
-        mutableStateOf(0)
+        mutableIntStateOf(currentIndex)
     }
     val inactiveColor = Color.LightGray
     TabRow(
@@ -270,7 +274,7 @@ fun TabView(
                 unselectedContentColor = inactiveColor,
                 onClick = {
                     selectedTabIndex = index
-                    onTabSelected(index)
+                    updateTabIndex(index)
                 }
             ) {
                 Text(

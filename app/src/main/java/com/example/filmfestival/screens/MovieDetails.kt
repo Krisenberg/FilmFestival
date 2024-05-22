@@ -95,6 +95,7 @@ import com.example.filmfestival.models.dto.MovieAllData
 import com.example.filmfestival.ui.theme.FilmFestivalTheme
 import com.example.filmfestival.ui.theme.WhiteText
 import com.example.filmfestival.utils.NavigationHelper
+import com.example.filmfestival.utils.Sound
 import com.example.filmfestival.utils.fadingEdge
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -431,11 +432,13 @@ fun MovieDetails(
                                         viewModel.removeMovieFromUsersWatchlist(1, movieId)
                                     }
                                     isOnWatchlist.value = false
+                                    viewModel.playSound(Sound.CLICK_PLINK)
                                 } else {
                                     scope.launch {
                                         viewModel.addMovieToUsersWatchlist(1, movieId)
                                     }
                                     isOnWatchlist.value = true
+                                    viewModel.playSound(Sound.CLICK_DRIP)
                                 }
                             },
                             enabled = (isOnWatchlist.value != null)

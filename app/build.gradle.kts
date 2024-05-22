@@ -73,10 +73,12 @@ dependencies {
     implementation(libs.androidx.ui.google.fonts)
     implementation(libs.androidx.material3)
     implementation(libs.androidx.material)
+    implementation(libs.androidx.media3)
     implementation(libs.coil)
 
     implementation(libs.room.runtime)
     implementation(libs.room.ktx)
+    implementation(libs.androidx.media3.ui)
 //    implementation(libs.androidx.constraintlayout.compose.android)
     annotationProcessor(libs.room.compiler)
     ksp(libs.room.compiler)

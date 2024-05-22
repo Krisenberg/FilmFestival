@@ -34,11 +34,18 @@ class NavigationHelper (
     }
 
     fun navigateBottomBar(route: NavigationRoutes) {
+//        val wasPopped = navController.popBackStack(navController.graph.findNode(route.name)!!.id, false)
+//        if (!wasPopped){
+//
+//        }
         navController.navigate(route.name) {
 //            navController.popBackStack(
 //                destinationId = navController.graph.findStartDestination().id,
 //                inclusive = false
 //            )
+            popUpTo(navController.graph.findStartDestination().id) {
+                saveState = true
+            }
             launchSingleTop = true
             restoreState = true
         }

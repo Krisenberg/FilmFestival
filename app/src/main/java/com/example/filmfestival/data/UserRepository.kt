@@ -4,9 +4,7 @@ import com.example.filmfestival.models.Movie
 import com.example.filmfestival.models.Show
 import com.example.filmfestival.models.crossRefs.TicketCrossRef
 import com.example.filmfestival.models.crossRefs.WatchlistCrossRef
-import com.example.filmfestival.models.dto.MovieAllData
 import com.example.filmfestival.models.relations.UserWithShows
-import com.example.filmfestival.models.relations.UserWithWatchlistMovies
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
@@ -37,19 +35,12 @@ class UserRepository @Inject constructor(
         watchlistDao.removeWatchlistEntry(entry)
     }
 
-//    suspend fun getUsersShows(userId: Int): List<Show> = userDao.getUserWithShows(userId).shows
-
     fun getUsersMovieTickets(userId: Int, movieId: Int): Flow<List<Show>> =
         userDao.getUserWithShows(userId).map{ value: UserWithShows ->
             value.shows.filter { show: Show -> show.movieId == movieId } }
 
     fun getUsersTickets(userId: Int): Flow<List<Show>> =
         userDao.getUserWithShows(userId).map{ value: UserWithShows -> value.shows }
-
-//    suspend fun checkIfShowIsInUsersTickets(userId: Int, showId: Int): Boolean {
-//        val show = showDao.getShow(showId)
-//        return userDao.getUserWithShows(userId).shows.contains(show)
-//    }
 
     suspend fun addUserTicket(userId: Int, showId: Int) {
         val ticket = TicketCrossRef(userId, showId)
