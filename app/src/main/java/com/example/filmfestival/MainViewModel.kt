@@ -53,6 +53,11 @@ class MainViewModel @Inject constructor(
         }
     }
 
+    fun getUsersMovieTickets(userId: Int, movieId: Int) = userRepository.getUsersMovieTickets(userId, movieId)
+
+    suspend fun addUsersTicket(userId: Int, showId: Int) = userRepository.addUserTicket(userId, showId)
+    suspend fun removeUsersTicket(userId: Int, showId: Int) = userRepository.removeUsersTicket(userId, showId)
+
 //    val actors = viewModelScope.async {
 //        movieDao.getActors()
 //    }

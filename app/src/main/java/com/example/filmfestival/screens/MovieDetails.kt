@@ -60,6 +60,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -82,12 +83,14 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.times
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.filmfestival.MainViewModel
 import com.example.filmfestival.composables.BottomNavBar
 import com.example.filmfestival.models.Actor
+import com.example.filmfestival.models.Show
 import com.example.filmfestival.models.dto.MovieAllData
 import com.example.filmfestival.ui.theme.FilmFestivalTheme
 import com.example.filmfestival.ui.theme.WhiteText
@@ -131,6 +134,10 @@ fun MovieDetails(
         val movieData = remember { mutableStateOf<MovieAllData?>(null) }
 //        val userTicketsForMovie = remember { mutableStateOf<List< }
         val isOnWatchlist = remember { mutableStateOf<Boolean?>(null) }
+
+        val usersMovieTickets = viewModel
+            .getUsersMovieTickets(1, movieId)
+            .collectAsStateWithLifecycle(initialValue = emptyList<Show>())
 
         LaunchedEffect(scope) {
 //            actors.value = viewModel.getActors()
@@ -329,13 +336,30 @@ fun MovieDetails(
                                 ) {
                                     this.items(listOfPairs){ (localTime, show) ->
                                         OutlinedButton(
-                                            onClick = { },
-                                            modifier = Modifier.padding(8.dp)
+                                            onClick = {
+                                                  if (usersMovieTickets.value.contains(show)) {
+                                                      scope.launch {
+                                                          viewModel.removeUsersTicket(1, show.showId)
+                                                      }
+                                                  } else {
+                                                      scope.launch {
+                                                          viewModel.addUsersTicket(1, show.showId)
+                                                      }
+                                                  }
+                                            },
+                                            modifier = Modifier.padding(8.dp),
+                                            colors = ButtonDefaults.outlinedButtonColors(
+                                                containerColor = if (usersMovieTickets.value.contains(show))
+                                                    MaterialTheme.colorScheme.primaryContainer
+                                                    else MaterialTheme.colorScheme.secondaryContainer
+                                            )
                                         ) {
                                             Text(
                                                 text = localTime.format(DateTimeFormatter.ofPattern("HH:mm")),
                                                 fontSize = 20.sp,
-                                                color = MaterialTheme.colorScheme.onPrimary
+                                                color = if (usersMovieTickets.value.contains(show))
+                                                    MaterialTheme.colorScheme.onPrimaryContainer
+                                                    else MaterialTheme.colorScheme.onSecondaryContainer
                                             )
                                         }
                                     }

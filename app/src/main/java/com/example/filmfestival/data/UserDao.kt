@@ -6,6 +6,7 @@ import com.example.filmfestival.models.relations.MovieWithAwards
 import com.example.filmfestival.models.relations.RoleWithActor
 import com.example.filmfestival.models.relations.UserWithShows
 import com.example.filmfestival.models.relations.UserWithWatchlistMovies
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface UserDao {
@@ -14,5 +15,5 @@ interface UserDao {
     suspend fun getUserWithWatchlistMovies(userId: Int): UserWithWatchlistMovies
 
     @Query("SELECT * FROM User WHERE userId = :userId")
-    suspend fun getUserWithShows(userId: Int): UserWithShows
+    fun getUserWithShows(userId: Int): Flow<UserWithShows>
 }
