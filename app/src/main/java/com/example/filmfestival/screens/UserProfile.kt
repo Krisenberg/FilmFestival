@@ -47,6 +47,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.filmfestival.MainViewModel
@@ -54,9 +55,12 @@ import com.example.filmfestival.R
 import com.example.filmfestival.composables.BottomNavBar
 import com.example.filmfestival.models.Actor
 import com.example.filmfestival.models.Movie
+import com.example.filmfestival.models.Show
 import com.example.filmfestival.models.dto.MovieAllData
 import com.example.filmfestival.utils.NavigationHelper
 import com.example.filmfestival.utils.NavigationRoutes
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 
 @Composable
@@ -74,6 +78,9 @@ fun UserProfile(
 
         val movies = remember { mutableStateOf<List<Movie>?>(null) }
         val scope = rememberCoroutineScope()
+        val usersTickets = viewModel
+            .getUsersTickets(1)
+            .collectAsStateWithLifecycle(initialValue = emptyList<Pair<Movie, LocalDateTime>>())
 
         LaunchedEffect(scope) {
             movies.value = viewModel.getUserWatchlistMovies(1)
@@ -128,12 +135,13 @@ fun UserProfile(
                     }
                 }
                 1 -> Tickets(
-                    tickets = listOf(
-                        Ticket("Dune: Part Two", "22.07.2024", "17:30", painterResource(id = R.drawable.dune)),
-                        Ticket("Avatar", "29.07.2024", "7:30", painterResource(id = R.drawable.avatar)),
-                        Ticket("Dune: Part Two", "22.07.2024", "17:30", painterResource(id = R.drawable.dune)),
-                        Ticket("Avatar", "29.07.2024", "7:30", painterResource(id = R.drawable.avatar))
-                    ),
+                    tickets = usersTickets.value,
+//                    tickets = listOf(
+//                        Ticket("Dune: Part Two", "22.07.2024", "17:30", painterResource(id = R.drawable.dune)),
+//                        Ticket("Avatar", "29.07.2024", "7:30", painterResource(id = R.drawable.avatar)),
+//                        Ticket("Dune: Part Two", "22.07.2024", "17:30", painterResource(id = R.drawable.dune)),
+//                        Ticket("Avatar", "29.07.2024", "7:30", painterResource(id = R.drawable.avatar))
+//                    ),
                     modifier = Modifier.fillMaxWidth()
                 )
             }
@@ -323,7 +331,7 @@ fun MovieRow(movie: Movie, navHelper: NavigationHelper) {
 
 @Composable
 fun Tickets(
-    tickets: List<Ticket>,
+    tickets: List<Pair<Movie, LocalDateTime>>,
     modifier: Modifier = Modifier
 ) {
     LazyColumn(modifier = modifier.fillMaxSize()) {
@@ -337,11 +345,11 @@ fun Tickets(
 }
 
 @Composable
-fun TicketRow(ticket: Ticket) {
+fun TicketRow(ticket: Pair<Movie, LocalDateTime>) {
     Row(verticalAlignment = Alignment.CenterVertically) {
         Column(modifier = Modifier.weight(1f)) {
             Text(
-                text = ticket.movieTitle,
+                text = ticket.first.title,
                 fontSize = 20.sp,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier
@@ -350,21 +358,21 @@ fun TicketRow(ticket: Ticket) {
                     .width(150.dp)
             )
             Text(
-                text = ticket.date,
+                text = "Date: ${ticket.second.format(DateTimeFormatter.ofPattern("dd.MM.yyyy"))}",
                 fontSize = 16.sp,
                 color = Color.Gray,
                 modifier = Modifier.padding(start = 20.dp)
             )
             Text(
-                text = ticket.time,
+                text = "Time: ${ticket.second.format(DateTimeFormatter.ofPattern("HH:mm"))}",
                 fontSize = 16.sp,
                 color = Color.Gray,
                 modifier = Modifier.padding(start = 20.dp)
             )
         }
         Spacer(modifier = Modifier.width(16.dp))
-        Image(
-            painter = ticket.poster,
+        AsyncImage(
+            model = ticket.first.moviePoster,
             contentDescription = null,
             contentScale = ContentScale.Crop,
             modifier = Modifier
@@ -374,9 +382,9 @@ fun TicketRow(ticket: Ticket) {
     }
 }
 
-data class Ticket(
-    val movieTitle: String,
-    val date: String,
-    val time: String,
-    val poster: Painter
-)
+//data class Ticket(
+//    val movieTitle: String,
+//    val date: String,
+//    val time: String,
+//    val poster: Painter
+//)

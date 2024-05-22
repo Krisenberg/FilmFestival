@@ -43,6 +43,9 @@ class UserRepository @Inject constructor(
         userDao.getUserWithShows(userId).map{ value: UserWithShows ->
             value.shows.filter { show: Show -> show.movieId == movieId } }
 
+    fun getUsersTickets(userId: Int): Flow<List<Show>> =
+        userDao.getUserWithShows(userId).map{ value: UserWithShows -> value.shows }
+
 //    suspend fun checkIfShowIsInUsersTickets(userId: Int, showId: Int): Boolean {
 //        val show = showDao.getShow(showId)
 //        return userDao.getUserWithShows(userId).shows.contains(show)

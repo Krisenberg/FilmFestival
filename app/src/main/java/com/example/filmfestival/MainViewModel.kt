@@ -6,10 +6,13 @@ import androidx.navigation.NavController
 import com.example.filmfestival.data.MovieDao
 import com.example.filmfestival.data.MovieRepository
 import com.example.filmfestival.data.UserRepository
+import com.example.filmfestival.models.Movie
 import com.example.filmfestival.models.Show
 import com.example.filmfestival.utils.NavigationRoutes
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.async
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
@@ -54,6 +57,15 @@ class MainViewModel @Inject constructor(
     }
 
     fun getUsersMovieTickets(userId: Int, movieId: Int) = userRepository.getUsersMovieTickets(userId, movieId)
+
+    fun getUsersTickets(userId: Int): Flow<List<Pair<Movie, LocalDateTime>>> =
+        userRepository.getUsersTickets(userId).map { shows: List<Show> ->
+            shows.map { show: Show ->
+                val movie = movieRepository.getMovieById(show.movieId)
+                val showDateTime = LocalDateTime.parse(show.dateTime, DateTimeFormatter.ISO_DATE_TIME)
+                Pair(movie, showDateTime)
+            }
+        }
 
     suspend fun addUsersTicket(userId: Int, showId: Int) = userRepository.addUserTicket(userId, showId)
     suspend fun removeUsersTicket(userId: Int, showId: Int) = userRepository.removeUsersTicket(userId, showId)
