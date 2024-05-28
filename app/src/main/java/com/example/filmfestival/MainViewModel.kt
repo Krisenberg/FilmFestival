@@ -43,12 +43,12 @@ class MainViewModel @Inject constructor(
 
     fun getUsersMovieTickets(userId: Int, movieId: Int) = userRepository.getUsersMovieTickets(userId, movieId)
 
-    fun getUsersTickets(userId: Int): Flow<List<Pair<Movie, LocalDateTime>>> =
+    fun getUsersTickets(userId: Int): Flow<List<Triple<Movie, LocalDateTime, Show>>> =
         userRepository.getUsersTickets(userId).map { shows: List<Show> ->
             shows.map { show: Show ->
                 val movie = movieRepository.getMovieById(show.movieId)
                 val showDateTime = LocalDateTime.parse(show.dateTime, DateTimeFormatter.ISO_DATE_TIME)
-                Pair(movie, showDateTime)
+                Triple(movie, showDateTime, show)
             }
         }
 

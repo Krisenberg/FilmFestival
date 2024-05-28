@@ -1,5 +1,12 @@
+@file:OptIn(ExperimentalMaterial3Api::class)
+
 package com.example.filmfestival.screens
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -15,20 +22,25 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.DismissDirection
+import androidx.compose.material3.DismissValue
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SwipeToDismiss
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberDismissState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
@@ -40,27 +52,26 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.filmfestival.MainViewModel
 import com.example.filmfestival.R
 import com.example.filmfestival.composables.BottomNavBar
-import com.example.filmfestival.models.Actor
 import com.example.filmfestival.models.Movie
 import com.example.filmfestival.models.Show
-import com.example.filmfestival.models.dto.MovieAllData
 import com.example.filmfestival.utils.NavigationHelper
 import com.example.filmfestival.utils.NavigationRoutes
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
@@ -80,7 +91,7 @@ fun UserProfile(
         val scope = rememberCoroutineScope()
         val usersTickets = viewModel
             .getUsersTickets(1)
-            .collectAsStateWithLifecycle(initialValue = emptyList<Pair<Movie, LocalDateTime>>())
+            .collectAsStateWithLifecycle(initialValue = emptyList<Triple<Movie, LocalDateTime, Show>>())
 
         LaunchedEffect(scope) {
             movies.value = viewModel.getUserWatchlistMovies(1)
@@ -121,7 +132,8 @@ fun UserProfile(
                         Watchlist(
                             watchlist = data,
                             navHelper = navHelper,
-                            modifier = Modifier.fillMaxWidth()
+                            modifier = Modifier.fillMaxWidth(),
+                            viewModel = viewModel
                         )
                     } else {
                         Box( modifier = Modifier.fillMaxSize()){
@@ -137,8 +149,19 @@ fun UserProfile(
                         Text(text = "Fetching the data from database...")
                     }
                 }
-                1 -> Tickets(
+                1 -> if(usersTickets.value.isEmpty()) {
+                    Box( modifier = Modifier.fillMaxSize()){
+                        Text (
+                            text = "You haven't signed up for any shows",
+                            fontSize = 20.sp,
+                            modifier = Modifier
+                                .align(alignment = Alignment.Center)
+                        )
+                    }
+                } else {
+                    Tickets (
                     tickets = usersTickets.value,
+                    viewModel,
 //                    tickets = listOf(
 //                        Ticket("Dune: Part Two", "22.07.2024", "17:30", painterResource(id = R.drawable.dune)),
 //                        Ticket("Avatar", "29.07.2024", "7:30", painterResource(id = R.drawable.avatar)),
@@ -146,7 +169,7 @@ fun UserProfile(
 //                        Ticket("Avatar", "29.07.2024", "7:30", painterResource(id = R.drawable.avatar))
 //                    ),
                     modifier = Modifier.fillMaxWidth()
-                )
+                )}
             }
         }
     }
@@ -295,12 +318,26 @@ fun TabView(
 fun Watchlist(
     watchlist: List<Movie>,
     navHelper: NavigationHelper,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    viewModel: MainViewModel
 ) {
-    LazyColumn(modifier = modifier.fillMaxSize()) {
-        items(watchlist.size) { index ->
-            MovieRow(movie = watchlist[index], navHelper = navHelper)
-            if (index < watchlist.size - 1) {
+    val coroutineScope = rememberCoroutineScope()
+    LazyColumn(
+        modifier = modifier.fillMaxSize()
+    ) {
+        items(
+            items = watchlist,
+            key = { it.movieId }
+        ) { movie ->
+            SwipeToDeleteContainer(
+                item = movie,
+                onDelete = { movieToDelete ->
+                    coroutineScope.launch {
+                        viewModel.removeMovieFromUsersWatchlist(1, movieToDelete.movieId)
+                    }
+                }
+            ) { movieItem ->
+                MovieRow(movie = movieItem, navHelper = navHelper)
                 Spacer(modifier = Modifier.height(15.dp))
             }
         }
@@ -335,9 +372,31 @@ fun MovieRow(movie: Movie, navHelper: NavigationHelper) {
 
 @Composable
 fun Tickets(
-    tickets: List<Pair<Movie, LocalDateTime>>,
+    tickets: List<Triple<Movie, LocalDateTime, Show>>,
+    viewModel: MainViewModel,
     modifier: Modifier = Modifier
 ) {
+    val coroutineScope = rememberCoroutineScope()
+    LazyColumn(
+        modifier = modifier.fillMaxSize()
+    ) {
+        items(
+            items = tickets,
+            key = { it }
+        ) { ticket ->
+            SwipeToDeleteContainer(
+                item = ticket,
+                onDelete = { ticketToDelete ->
+                    coroutineScope.launch {
+                        viewModel.removeUsersTicket(1, ticketToDelete.third.showId)
+                    }
+                }
+            ) { ticketItem ->
+                TicketRow(ticket = ticketItem)
+                Spacer(modifier = Modifier.height(15.dp))
+            }
+        }
+    }
     LazyColumn(modifier = modifier.fillMaxSize()) {
         items(tickets.size) { index ->
             TicketRow(ticket = tickets[index])
@@ -349,7 +408,7 @@ fun Tickets(
 }
 
 @Composable
-fun TicketRow(ticket: Pair<Movie, LocalDateTime>) {
+fun TicketRow(ticket: Triple<Movie, LocalDateTime, Show>) {
     Row(verticalAlignment = Alignment.CenterVertically) {
         Column(modifier = Modifier.weight(1f)) {
             Text(
@@ -364,13 +423,13 @@ fun TicketRow(ticket: Pair<Movie, LocalDateTime>) {
             Text(
                 text = "Date: ${ticket.second.format(DateTimeFormatter.ofPattern("dd.MM.yyyy"))}",
                 fontSize = 16.sp,
-                color = Color.Gray,
+                color = MaterialTheme.colorScheme.outline,
                 modifier = Modifier.padding(start = 20.dp)
             )
             Text(
                 text = "Time: ${ticket.second.format(DateTimeFormatter.ofPattern("HH:mm"))}",
                 fontSize = 16.sp,
-                color = Color.Gray,
+                color = MaterialTheme.colorScheme.outline,
                 modifier = Modifier.padding(start = 20.dp)
             )
         }
@@ -386,6 +445,81 @@ fun TicketRow(ticket: Pair<Movie, LocalDateTime>) {
     }
 }
 
+@Composable
+fun <T> SwipeToDeleteContainer(
+    item: T,
+    onDelete: (T) -> Unit,
+    animationDuration: Int = 500,
+    content: @Composable (T) -> Unit
+) {
+    var isRemoved by remember { mutableStateOf(false) }
+    val state = rememberDismissState(
+        confirmValueChange = { value ->
+            if (value == DismissValue.DismissedToEnd || value == DismissValue.DismissedToStart) {
+                isRemoved = true
+                true
+            } else {
+                false
+            }
+        }
+    )
+
+    LaunchedEffect(key1 = isRemoved) {
+        if (isRemoved) {
+            delay(animationDuration.toLong())
+            onDelete(item)
+        }
+    }
+
+    AnimatedVisibility(
+        visible = !isRemoved,
+        exit = shrinkVertically(
+            animationSpec = tween(durationMillis = animationDuration),
+            shrinkTowards = Alignment.Top
+        ) + fadeOut()
+    ) {
+        SwipeToDismiss(
+            state = state,
+            background = {
+                DeleteBackground(
+                    swipeProgress = {
+                        // Calculate the swipe progress based on the dismiss state's progress
+                        val fraction = if (state.dismissDirection == DismissDirection.EndToStart) {
+                            state.progress
+                        } else {
+                            0f
+                        }
+                        fraction
+                    }
+                )
+            },
+            dismissContent = { content(item) },
+            directions = setOf(DismissDirection.EndToStart)
+        )
+    }
+}
+
+@Composable
+fun DeleteBackground(swipeProgress: () -> Float) {
+    val progress = swipeProgress()
+    val color = if (progress > 0f) Color.DarkGray else Color.Transparent
+    val iconAlpha by animateFloatAsState(targetValue = if (progress > 0.1f) 1f else 0f)
+
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(color)
+            .padding(16.dp),
+        contentAlignment = Alignment.CenterEnd
+    ) {
+        Icon(
+            imageVector = Icons.Default.Delete,
+            contentDescription = null,
+            tint = Color.White,
+            modifier = Modifier.alpha(iconAlpha)
+        )
+    }
+}
 //data class Ticket(
 //    val movieTitle: String,
 //    val date: String,

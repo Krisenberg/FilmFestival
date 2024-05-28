@@ -11,6 +11,8 @@ import com.example.filmfestival.screens.EditUser
 import com.example.filmfestival.screens.HomeScreen
 import com.example.filmfestival.screens.MovieDetails
 import com.example.filmfestival.screens.MovieSet
+import com.example.filmfestival.screens.News
+import com.example.filmfestival.screens.NewsScreen
 import com.example.filmfestival.screens.UserProfile
 
 enum class NavigationRoutes {
@@ -47,7 +49,20 @@ fun CreateNavigationGraph(
         composable(NavigationRoutes.USER_PROFILE.name) {
             UserProfile(navHelper = navHelper, viewModel = viewModel)
         }
-        composable(NavigationRoutes.NEWS_DETAILS.name){
+        composable(
+            route = "${NavigationRoutes.NEWS_DETAILS.name}/{imageRes}/{date}/{text}/{description}",
+            arguments = listOf(
+                navArgument(name = "imageRes"){ type = NavType.IntType},
+                navArgument(name = "date"){ type = NavType.StringType},
+                navArgument(name = "text"){ type = NavType.StringType},
+                navArgument(name = "description"){ type = NavType.StringType}
+            )
+        ){args->
+            val imageRes = args.arguments?.getInt("imageRes") ?: 1
+            val date = args.arguments?.getString("date") ?: "Date"
+            val text = args.arguments?.getString("text") ?: "Text"
+            val description = args.arguments?.getString("description") ?: "Description"
+            NewsScreen(navHelper = navHelper, viewModel = viewModel, imageRes = imageRes, date = date, text = text, description = description)
             //TODO - navgiation tutorial with arguments
             //TODO - passing username as a parameter
             //TODO - passing news as a parameter

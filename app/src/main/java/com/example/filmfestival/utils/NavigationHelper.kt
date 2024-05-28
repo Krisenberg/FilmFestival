@@ -33,6 +33,13 @@ class NavigationHelper (
         }
     }
 
+    fun navigateWithNews(route: NavigationRoutes, imageRes: Int, date: String, text: String, description: String){
+        navController.navigate("${route.name}/${imageRes}/${date}/${text}/${description}"){
+            launchSingleTop = true
+            restoreState = true
+        }
+    }
+
     fun navigateBottomBar(route: NavigationRoutes) {
 //        val wasPopped = navController.popBackStack(navController.graph.findNode(route.name)!!.id, false)
 //        if (!wasPopped){
