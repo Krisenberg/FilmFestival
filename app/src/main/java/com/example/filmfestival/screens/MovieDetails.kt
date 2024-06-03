@@ -23,7 +23,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
@@ -84,6 +86,7 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
@@ -292,22 +295,121 @@ fun MovieDetails(
                             )
                         }
                     }
-
-                    items(data.rolesWithActors) {
+                    item {
+                        Box(modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 8.dp, bottom = 8.dp)){
+                            Divider(
+                                modifier = Modifier
+                                    .fillMaxWidth(0.95f)
+                                    .align(Alignment.Center),
+                                thickness = 2.dp,
+                                color = MaterialTheme.colorScheme.surfaceVariant
+                            )
+                        }
+                    }
+                    item {
                         Text(
-                            text = "Actor ${it.actor.name}, played: ${it.role.starring}",
-                            fontSize = 12.sp,
-                            color = Color.White
+                            text = "Actors",
+                            fontSize = 20.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = Color.White,
+                            modifier = Modifier.padding(8.dp)
                         )
                     }
-
-                    items(data.awards) {
+                    item {
+                        LazyRow(
+                            modifier = Modifier.padding(horizontal = 8.dp)
+                        ) {
+                            items(data.rolesWithActors) { roleWithActor ->
+                                Column(
+                                    horizontalAlignment = Alignment.CenterHorizontally,
+                                    modifier = Modifier
+                                        .padding(end = 8.dp)
+                                        .wrapContentSize()
+                                ) {
+                                    AsyncImage(
+                                        model = ImageRequest.Builder(LocalContext.current)
+                                            .data(roleWithActor.actor.photo)
+                                            .build(),
+                                        contentDescription = "Photo of ${roleWithActor.actor.name}",
+                                        modifier = Modifier
+                                            .size(150.dp)
+                                            .clip(RoundedCornerShape(8.dp)),
+                                        contentScale = ContentScale.Crop
+                                    )
+                                    Text(
+                                        text = roleWithActor.actor.name,
+                                        fontSize = 14.sp,
+                                        fontWeight = FontWeight.Bold,
+                                        color = MaterialTheme.colorScheme.onBackground,
+                                        textAlign = TextAlign.Center,
+                                        modifier = Modifier.padding(top = 4.dp),
+                                        maxLines = 2,
+                                        overflow = TextOverflow.Ellipsis
+                                    )
+                                    Text(
+                                        text = roleWithActor.role.starring,
+                                        fontSize = 12.sp,
+                                        color = MaterialTheme.colorScheme.onBackground,
+                                        textAlign = TextAlign.Center,
+                                        modifier = Modifier.padding(top = 2.dp)
+                                    )
+                                }
+                            }
+                        }
+                    }
+                    item {
+                        Box(modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 8.dp, bottom = 8.dp)){
+                            Divider(
+                                modifier = Modifier
+                                    .fillMaxWidth(0.95f)
+                                    .align(Alignment.Center),
+                                thickness = 2.dp,
+                                color = MaterialTheme.colorScheme.surfaceVariant
+                            )
+                        }
+                    }
+                    item {
                         Text(
-                            text = "Award ${it.name}, details: ${it.details}",
-                            fontSize = 12.sp,
-                            color = Color.White
+                            text = "Awards",
+                            fontSize = 20.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = Color.White,
+                            modifier = Modifier.padding(8.dp)
                         )
                     }
+                    item {
+                        LazyRow(
+                            modifier = Modifier.padding(horizontal = 8.dp)
+                        ) {
+                            items(data.awards) {
+                                Text(
+                                    text = "Award ${it.name}, details: ${it.details}",
+                                    fontSize = 12.sp,
+                                    color = Color.White,
+                                    modifier = Modifier.padding(end = 8.dp)
+                                )
+                            }
+                        }
+                    }
+//                    items(data.rolesWithActors) {
+//                        Text(
+//                            text = "Actor ${it.actor.name}, played: ${it.role.starring}",
+//                            fontSize = 12.sp,
+//                            color = Color.White
+//                        )
+//                    }
+//
+//                    items(data.awards) {
+//                        Text(
+//                            text = "Award ${it.name}, details: ${it.details}",
+//                            fontSize = 12.sp,
+//                            color = Color.White
+//                        )
+//                    }
 
                     items(data.trailers) {
                         Text(
@@ -508,4 +610,3 @@ fun MovieDetails(
         }
     }
 }
-
