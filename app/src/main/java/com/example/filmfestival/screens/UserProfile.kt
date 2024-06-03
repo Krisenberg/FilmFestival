@@ -79,8 +79,7 @@ import java.time.format.DateTimeFormatter
 @Composable
 fun UserProfile(
     navHelper: NavigationHelper,
-    viewModel: MainViewModel,
-    username: String = "Jan Kowalski"
+    viewModel: MainViewModel
 ){
     Scaffold(
         bottomBar = { BottomNavBar(navHelper = navHelper) }
@@ -93,6 +92,8 @@ fun UserProfile(
             .getUsersTickets(1)
             .collectAsStateWithLifecycle(initialValue = emptyList<Triple<Movie, LocalDateTime, Show>>())
 
+        val username by viewModel.getUsername(1).collectAsStateWithLifecycle(initialValue = "Loading...")
+        
         LaunchedEffect(scope) {
             movies.value = viewModel.getUserWatchlistMovies(1)
         }
@@ -201,7 +202,7 @@ fun TopBar(
         }
         Button(
             onClick = {
-                navHelper.navigateWithStr(NavigationRoutes.USER_PROFILE_EDIT, username)
+                navHelper.navigate(NavigationRoutes.USER_PROFILE_EDIT)
 //                navController.navigate("USER_PROFILE_EDIT/${username}", )
 //                {
 //                    navController.graph.startDestinationRoute?.let { route ->
@@ -246,7 +247,8 @@ fun ProfileSection(
         Text(
             text = username,
             fontSize = 20.sp,
-            color = Color.White
+            color = MaterialTheme.colorScheme.onBackground,
+            fontWeight = FontWeight.Bold
         )
     }
 }

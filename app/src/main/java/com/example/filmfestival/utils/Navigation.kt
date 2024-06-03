@@ -49,6 +49,9 @@ fun CreateNavigationGraph(
         composable(NavigationRoutes.USER_PROFILE.name) {
             UserProfile(navHelper = navHelper, viewModel = viewModel)
         }
+        composable(NavigationRoutes.USER_PROFILE_EDIT.name) {
+            EditUser(navHelper = navHelper, viewModel = viewModel)
+        }
         composable(
             route = "${NavigationRoutes.NEWS_DETAILS.name}/{imageRes}/{date}/{text}/{description}",
             arguments = listOf(
@@ -67,12 +70,12 @@ fun CreateNavigationGraph(
             //TODO - passing username as a parameter
             //TODO - passing news as a parameter
         }
-        composable(
-            "${NavigationRoutes.USER_PROFILE_EDIT.name}/{username}",
-            arguments = listOf(navArgument("username") { type = NavType.StringType })
-        ) { backStackEntry ->
-            val username = backStackEntry.arguments?.getString("username") ?: " "
-            EditUser(navHelper = navHelper, viewModel = viewModel, username = username)
-        }
+//        composable(
+//            "${NavigationRoutes.USER_PROFILE_EDIT.name}/{username}",
+//            arguments = listOf(navArgument("username") { type = NavType.StringType })
+//        ) { backStackEntry ->
+//            val username = backStackEntry.arguments?.getString("username") ?: " "
+//            EditUser(navHelper = navHelper, viewModel = viewModel, username = username)
+//        }
     }
 }

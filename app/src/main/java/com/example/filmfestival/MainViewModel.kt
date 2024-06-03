@@ -1,6 +1,7 @@
 package com.example.filmfestival
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.filmfestival.data.MovieDao
 import com.example.filmfestival.data.MovieRepository
 import com.example.filmfestival.data.UserRepository
@@ -11,6 +12,7 @@ import com.example.filmfestival.utils.SoundManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
@@ -65,4 +67,13 @@ class MainViewModel @Inject constructor(
         soundManager.playSound(sound)
     }
 
+    fun getUsername(userId: Int): Flow<String> {
+        return userRepository.getUsername(userId)
+    }
+
+    fun changeUsername(userId: Int, newUsername: String) {
+        viewModelScope.launch {
+            userRepository.changeUsername(userId, newUsername)
+        }
+    }
 }

@@ -18,6 +18,13 @@ class UserRepository @Inject constructor(
 ){
 
 //    val allMoviesOrderedByTitle: Flow<List<Movie>> = movieDao.getMoviesOrderedByTitle()
+
+    fun getUsername(userId: Int): Flow<String> {
+        return userDao.getUsername(userId)
+    }
+    suspend fun changeUsername(userId: Int, newUsername: String) {
+        userDao.updateUsername(userId, newUsername)
+    }
     suspend fun getUserWatchlistMovies(userId : Int): List<Movie> = userDao.getUserWithWatchlistMovies(userId).watchlistMovies
 
     suspend fun checkIfMovieIsOnUsersWatchlist(userId: Int, movieId: Int): Boolean {
