@@ -2,6 +2,9 @@ package com.example.filmfestival.screens
 
 import android.annotation.SuppressLint
 import android.util.Log
+import android.view.View
+import android.widget.FrameLayout
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -12,6 +15,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -34,6 +38,7 @@ import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.AssistChipDefaults
+import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -47,14 +52,15 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -84,12 +90,14 @@ import com.example.filmfestival.utils.NavigationHelper
 import com.example.filmfestival.utils.Sound
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.FullscreenListener
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.options.IFramePlayerOptions
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView
 import kotlinx.coroutines.launch
 import java.time.format.DateTimeFormatter
 
 @SuppressLint("SetJavaScriptEnabled")
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MovieDetails(
     navHelper: NavigationHelper,
@@ -368,16 +376,16 @@ fun MovieDetails(
                                         .padding(end = 8.dp)
                                         .wrapContentSize()
                                 ) {
-                                    AsyncImage(
-                                        model = ImageRequest.Builder(LocalContext.current)
-                                            .data(R.drawable.oscars)
-                                            .build(),
-                                        contentDescription = "Award ${award.details}",
-                                        modifier = Modifier
-                                            .size(130.dp)
-                                            .clip(RoundedCornerShape(8.dp)),
-                                        contentScale = ContentScale.Crop
-                                    )
+//                                    AsyncImage(
+//                                        model = ImageRequest.Builder(LocalContext.current)
+//                                            .data(R.drawable.oscars)
+//                                            .build(),
+//                                        contentDescription = "Award ${award.details}",
+//                                        modifier = Modifier
+//                                            .size(130.dp)
+//                                            .clip(RoundedCornerShape(8.dp)),
+//                                        contentScale = ContentScale.Crop
+//                                    )
                                     Text(
                                         text = award.name,
                                         fontSize = 14.sp,
@@ -459,13 +467,10 @@ fun MovieDetails(
                         )
                     }
                     items(data.trailers) { trailer ->
-                        Surface(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .padding(bottom = 10.dp),
-                            color = MaterialTheme.colorScheme.background
-                        ){
-                            YouTubePlayer(youtubeVideoId = trailer.trailer, lifecycleOwner = LocalLifecycleOwner.current)
+                        Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
+                            Column {
+                                YouTubePlayer(youtubeVideoId = trailer.trailer, lifecycleOwner = LocalLifecycleOwner.current)
+                            }
                         }
                     }
 
@@ -492,9 +497,8 @@ fun MovieDetails(
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .height(
-                                        data.shows
-                                            .count()
-                                            .div(3) * 80.dp
+                                        ((listOfPairs.count() - 1)
+                                            .div(3) + 1) * 80.dp
                                     )
                             ) {
                                 LazyVerticalGrid(
@@ -661,26 +665,135 @@ fun MovieDetails(
     }
 }
 
+//@Composable
+//fun YouTubePlayer(
+//    youtubeVideoId: String,
+//    lifecycleOwner: LifecycleOwner
+//){
+//    var isFullscreen by remember { mutableStateOf(false) }
+//
+//    AndroidView(
+//        modifier = Modifier
+//            .fillMaxWidth()
+//            .padding(8.dp)
+//            .clip(RoundedCornerShape(16.dp)),
+//        factory = { context->
+//            YouTubePlayerView(context = context).apply {
+//                lifecycleOwner.lifecycle.addObserver(this)
+//
+//                addYouTubePlayerListener(object: AbstractYouTubePlayerListener(){
+//                    override fun onReady(youTubePlayer: YouTubePlayer) {
+//                        youTubePlayer.loadVideo(youtubeVideoId, 0f)
+//                    }
+//                })
+//
+//            }
+//        }
+//    )
+//}
+
+
 @Composable
 fun YouTubePlayer(
     youtubeVideoId: String,
-    lifecycleOwner: LifecycleOwner
-){
-    AndroidView(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(8.dp)
-            .clip(RoundedCornerShape(16.dp)),
-        factory = { context->
-            YouTubePlayerView(context = context).apply {
-                lifecycleOwner.lifecycle.addObserver(this)
+    lifecycleOwner: LifecycleOwner,
+) {
+    var isFullscreen by remember { mutableStateOf(false) }
+    var youTubePlayer: YouTubePlayer? by remember { mutableStateOf(null) }
 
-                addYouTubePlayerListener(object: AbstractYouTubePlayerListener(){
-                    override fun onReady(youTubePlayer: YouTubePlayer) {
-                        youTubePlayer.loadVideo(youtubeVideoId, 0f)
-                    }
-                })
+    val context = LocalContext.current
+
+    // Create YouTubePlayerView in remember
+    val youTubePlayerView = remember {
+        YouTubePlayerView(context).apply {
+            enableAutomaticInitialization = false
+        }
+    }
+
+    // Create FrameLayout for fullscreen view
+    val fullscreenViewContainer = remember {
+        FrameLayout(context)
+    }
+
+    // IFramePlayer options
+    val iFramePlayerOptions = IFramePlayerOptions.Builder()
+        .controls(1)
+        .fullscreen(1)
+        .build()
+
+    // Initialize YouTubePlayerView in LaunchedEffect
+    LaunchedEffect(youtubeVideoId) {
+        youTubePlayerView.addFullscreenListener(object : FullscreenListener {
+            override fun onEnterFullscreen(fullscreenView: View, exitFullscreen: () -> Unit) {
+                isFullscreen = true
+
+                youTubePlayerView.visibility = View.GONE
+                fullscreenViewContainer.visibility = View.VISIBLE
+                fullscreenViewContainer.addView(fullscreenView)
+            }
+
+            override fun onExitFullscreen() {
+                isFullscreen = false
+
+                youTubePlayerView.visibility = View.VISIBLE
+                fullscreenViewContainer.visibility = View.GONE
+                fullscreenViewContainer.removeAllViews()
+            }
+        })
+
+        youTubePlayerView.initialize(object : AbstractYouTubePlayerListener() {
+            override fun onReady(player: YouTubePlayer) {
+                youTubePlayer = player
+                player.loadVideo(youtubeVideoId, 0f)
+            }
+        }, iFramePlayerOptions)
+    }
+
+    // Handle back button to exit fullscreen
+    BackHandler(enabled = isFullscreen) {
+        youTubePlayer?.toggleFullscreen()
+    }
+
+    // Jetpack Compose UI
+    Box(modifier = Modifier.fillMaxSize()) {
+        if (!isFullscreen) {
+            AndroidView(
+                factory = { youTubePlayerView },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .aspectRatio(16 / 9f)
+            )
+        } else {
+            AndroidView(
+                factory = { fullscreenViewContainer },
+                modifier = Modifier.fillMaxSize()
+            )
+        }
+
+//        Button(
+//            onClick = {
+//                youTubePlayer?.toggleFullscreen()
+//            },
+//            modifier = Modifier
+//                .align(Alignment.BottomCenter)
+//                .padding(16.dp)
+//        ) {
+//            Text(text = "Enter Fullscreen")
+//        }
+    }
+
+    DisposableEffect(lifecycleOwner) {
+        val observer = androidx.lifecycle.LifecycleEventObserver { _, event ->
+            when (event) {
+                androidx.lifecycle.Lifecycle.Event.ON_DESTROY -> youTubePlayerView.release()
+                else -> {}
             }
         }
-    )
+
+        lifecycleOwner.lifecycle.addObserver(observer)
+
+        onDispose {
+            lifecycleOwner.lifecycle.removeObserver(observer)
+        }
+    }
 }
