@@ -69,4 +69,5 @@
 (69,11,66,"Darth Vader"),
 (70,11,67,"Chewbacca"),
 (71,12,68,"Marty McFly"),
-(72,12,69,"Emmett Brown");
+(72,12,69,"Emmett Brown"),
+(73,12,70,"George McFly");

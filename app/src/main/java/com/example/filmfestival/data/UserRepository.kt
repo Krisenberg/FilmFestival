@@ -22,8 +22,15 @@ class UserRepository @Inject constructor(
     fun getUsername(userId: Int): Flow<String> {
         return userDao.getUsername(userId)
     }
+    fun getAvatar(userId: Int): Flow<String> {
+        return userDao.getAvatar(userId)
+    }
     suspend fun changeUsername(userId: Int, newUsername: String) {
         userDao.updateUsername(userId, newUsername)
+    }
+
+    suspend fun changeAvatar(userId: Int, newAvatar: String) {
+        userDao.updateAvatar(userId, newAvatar)
     }
     suspend fun getUserWatchlistMovies(userId : Int): List<Movie> = userDao.getUserWithWatchlistMovies(userId).watchlistMovies
 

@@ -21,4 +21,10 @@ interface UserDao {
 
     @Query("SELECT username FROM User WHERE userId = :userId")
     fun getUsername(userId: Int): Flow<String>
+
+    @Query("UPDATE User SET avatar = :newAvatar WHERE userId = :userId")
+    suspend fun updateAvatar(userId: Int, newAvatar: String)
+
+    @Query("SELECT avatar FROM User WHERE userId = :userId")
+    fun getAvatar(userId: Int): Flow<String>
 }

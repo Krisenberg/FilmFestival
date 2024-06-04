@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.filmfestival.data.MovieDao
 import com.example.filmfestival.data.MovieRepository
 import com.example.filmfestival.data.UserRepository
+import com.example.filmfestival.models.Actor
 import com.example.filmfestival.models.Movie
 import com.example.filmfestival.models.Show
 import com.example.filmfestival.utils.Sound
@@ -28,6 +29,7 @@ class MainViewModel @Inject constructor(
 
     suspend fun getMoviesIdTitlePoster() = movieRepository.moviesIdTitlePoster()
 
+    suspend fun getActorsIdPhoto() = movieRepository.actorsIdPhoto()
     suspend fun getMovieAllData(movieId: Int) = movieRepository.movieAllData(movieId)
 
     fun groupShowsByDate(shows: List<Show>): Map<LocalDate, List<Pair<LocalTime, Show>>> {
@@ -54,6 +56,7 @@ class MainViewModel @Inject constructor(
             }
         }
 
+
     suspend fun addUsersTicket(userId: Int, showId: Int) = userRepository.addUserTicket(userId, showId)
     suspend fun removeUsersTicket(userId: Int, showId: Int) = userRepository.removeUsersTicket(userId, showId)
 
@@ -71,9 +74,19 @@ class MainViewModel @Inject constructor(
         return userRepository.getUsername(userId)
     }
 
+    fun getAvatar(userId: Int): Flow<String> {
+        return userRepository.getAvatar(userId)
+    }
+
     fun changeUsername(userId: Int, newUsername: String) {
         viewModelScope.launch {
             userRepository.changeUsername(userId, newUsername)
+        }
+    }
+
+    fun changeAvatar(userId: Int, newAvatar: String) {
+        viewModelScope.launch {
+            userRepository.changeAvatar(userId, newAvatar)
         }
     }
 }

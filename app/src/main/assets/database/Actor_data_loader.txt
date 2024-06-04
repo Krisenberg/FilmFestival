@@ -66,4 +66,5 @@
 (66, "David Prowse", "https://image.tmdb.org/t/p/original/xTocYiKHlRYN8tfh8vyQFsRXC0K.jpg"),
 (67, "Peter Mayhew", "https://image.tmdb.org/t/p/original/rKIBv08O63pyC6PixjyhrjNB8Uh.jpg"),
 (68, "Michael J. Fox", "https://image.tmdb.org/t/p/original/2JB4FMgQmnhbBlQ4SxWFN9EIVDi.jpg"),
-(69, "Christopher Lloyd", "https://image.tmdb.org/t/p/original/nxVjpyb3UrfbPZnEyDNlQVlFAs5.jpg")
+(69, "Christopher Lloyd", "https://image.tmdb.org/t/p/original/nxVjpyb3UrfbPZnEyDNlQVlFAs5.jpg"),
+(70, "Crispin Glover", "https://image.tmdb.org/t/p/original/e6lbvXOnVEGDLn9OpaLQpwMSWe3.jpg");

@@ -7,6 +7,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.example.filmfestival.MainViewModel
+import com.example.filmfestival.screens.EditAvatar
 import com.example.filmfestival.screens.EditUser
 import com.example.filmfestival.screens.HomeScreen
 import com.example.filmfestival.screens.MovieDetails
@@ -22,7 +23,7 @@ enum class NavigationRoutes {
     MOVIE_SET,
     USER_PROFILE,
     USER_PROFILE_EDIT,
-    USER_PHOTO_GALLERY
+    EDIT_AVATAR
 }
 
 @Composable
@@ -51,6 +52,9 @@ fun CreateNavigationGraph(
         }
         composable(NavigationRoutes.USER_PROFILE_EDIT.name) {
             EditUser(navHelper = navHelper, viewModel = viewModel)
+        }
+        composable(NavigationRoutes.EDIT_AVATAR.name){
+            EditAvatar(navHelper = navHelper, viewModel = viewModel)
         }
         composable(
             route = "${NavigationRoutes.NEWS_DETAILS.name}/{imageRes}/{date}/{text}/{description}",

@@ -25,6 +25,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Delete
@@ -57,12 +58,15 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
+import coil.compose.rememberImagePainter
+import coil.request.ImageRequest
 import com.example.filmfestival.MainViewModel
 import com.example.filmfestival.R
 import com.example.filmfestival.composables.BottomNavBar
@@ -93,7 +97,9 @@ fun UserProfile(
             .collectAsStateWithLifecycle(initialValue = emptyList<Triple<Movie, LocalDateTime, Show>>())
 
         val username by viewModel.getUsername(1).collectAsStateWithLifecycle(initialValue = "Loading...")
-        
+        val avatarUrl by viewModel.getAvatar(1).collectAsStateWithLifecycle(initialValue = "")
+
+
         LaunchedEffect(scope) {
             movies.value = viewModel.getUserWatchlistMovies(1)
         }
@@ -112,7 +118,8 @@ fun UserProfile(
             )
             Spacer(modifier = Modifier.height(4.dp))
             ProfileSection(
-                username = username
+                username = username,
+                avatarUrl = avatarUrl
             )
             Spacer(modifier = Modifier.height(50.dp))
             TabView(
@@ -226,19 +233,18 @@ fun TopBar(
     }
 }
 
-
-
 @Composable
 fun ProfileSection(
     modifier: Modifier = Modifier,
-    username: String
+    username: String,
+    avatarUrl: String
 ) {
     Column(
         modifier = modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         RoundImage(
-            image = painterResource(id = R.drawable.timothe),
+            avatarUrl = avatarUrl,
             modifier = Modifier
                 .size(100.dp)
                 .padding(5.dp)
@@ -255,7 +261,7 @@ fun ProfileSection(
 
 @Composable
 fun RoundImage(
-    image: Painter,
+    avatarUrl: String,
     modifier: Modifier = Modifier
 ) {
     Box(
@@ -264,14 +270,14 @@ fun RoundImage(
             .clip(CircleShape)
             .background(Color.LightGray)
     ) {
-        Image(
-            painter = image,
+        AsyncImage(
+            model = avatarUrl,
             contentDescription = null,
-            contentScale = ContentScale.Crop,
             modifier = Modifier
                 .aspectRatio(1f, matchHeightConstraintsFirst = true)
                 .fillMaxSize()
-                .align(Alignment.Center)
+                .align(Alignment.Center),
+            contentScale = ContentScale.Crop
         )
     }
 }
@@ -359,7 +365,8 @@ fun MovieRow(movie: Movie, navHelper: NavigationHelper) {
             contentDescription = null,
             contentScale = ContentScale.Crop,
             modifier = Modifier
-                .size(110.dp)
+                .width(100.dp)
+                .height(150.dp)
                 .clip(MaterialTheme.shapes.medium)
         )
         Spacer(modifier = Modifier.width(16.dp))
@@ -441,7 +448,8 @@ fun TicketRow(ticket: Triple<Movie, LocalDateTime, Show>) {
             contentDescription = null,
             contentScale = ContentScale.Crop,
             modifier = Modifier
-                .size(110.dp)
+                .width(100.dp)
+                .height(150.dp)
                 .clip(MaterialTheme.shapes.medium)
         )
     }
