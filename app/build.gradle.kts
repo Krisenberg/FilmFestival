@@ -87,7 +87,9 @@ dependencies {
     ksp(libs.hilt.compiler)
     implementation(libs.hilt.navigation)
 
-    implementation("com.pierfrancescosoffritti.androidyoutubeplayer:core:12.1.0")
+//    implementation("com.pierfrancescosoffritti.androidyoutubeplayer:core:12.1.0")
+    implementation( "com.pierfrancescosoffritti.androidyoutubeplayer:chromecast-sender:0.28")
+
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

@@ -69,6 +69,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.times
+import androidx.compose.ui.viewinterop.AndroidView
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
@@ -80,6 +82,9 @@ import com.example.filmfestival.models.dto.MovieAllData
 import com.example.filmfestival.ui.theme.WhiteText
 import com.example.filmfestival.utils.NavigationHelper
 import com.example.filmfestival.utils.Sound
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView
 import kotlinx.coroutines.launch
 import java.time.format.DateTimeFormatter
 
@@ -444,8 +449,24 @@ fun MovieDetails(
                             )
                         }
                     }
-
+                    item {
+                        Text(
+                            text = "Trailer",
+                            fontSize = 20.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = Color.White,
+                            modifier = Modifier.padding(8.dp)
+                        )
+                    }
                     items(data.trailers) { trailer ->
+                        Surface(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(bottom = 10.dp),
+                            color = MaterialTheme.colorScheme.background
+                        ){
+                            YouTubePlayer(youtubeVideoId = trailer.trailer, lifecycleOwner = LocalLifecycleOwner.current)
+                        }
                     }
 
                     item {
@@ -638,4 +659,28 @@ fun MovieDetails(
             Text(text = "Waiting...")
         }
     }
+}
+
+@Composable
+fun YouTubePlayer(
+    youtubeVideoId: String,
+    lifecycleOwner: LifecycleOwner
+){
+    AndroidView(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(8.dp)
+            .clip(RoundedCornerShape(16.dp)),
+        factory = { context->
+            YouTubePlayerView(context = context).apply {
+                lifecycleOwner.lifecycle.addObserver(this)
+
+                addYouTubePlayerListener(object: AbstractYouTubePlayerListener(){
+                    override fun onReady(youTubePlayer: YouTubePlayer) {
+                        youTubePlayer.loadVideo(youtubeVideoId, 0f)
+                    }
+                })
+            }
+        }
+    )
 }
