@@ -1,8 +1,7 @@
 package com.example.filmfestival.screens
 
-import android.content.res.Resources.Theme
+import android.annotation.SuppressLint
 import android.util.Log
-import android.view.MotionEvent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -13,15 +12,12 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.RowScope
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
@@ -31,88 +27,63 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.overscroll
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.ChipDefaults
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
-import androidx.compose.material.icons.materialIcon
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.AssistChipDefaults
-import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.ChipColors
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FilledIconButton
-import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.IconButtonColors
-import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarColors
 import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.darkColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.input.pointer.pointerInteropFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.times
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.filmfestival.MainViewModel
+import com.example.filmfestival.R
 import com.example.filmfestival.composables.BottomNavBar
-import com.example.filmfestival.models.Actor
 import com.example.filmfestival.models.Show
 import com.example.filmfestival.models.dto.MovieAllData
-import com.example.filmfestival.ui.theme.FilmFestivalTheme
 import com.example.filmfestival.ui.theme.WhiteText
 import com.example.filmfestival.utils.NavigationHelper
 import com.example.filmfestival.utils.Sound
-import com.example.filmfestival.utils.fadingEdge
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
-import kotlin.text.Typography.ellipsis
 
+@SuppressLint("SetJavaScriptEnabled")
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
 @Composable
 fun MovieDetails(
@@ -319,7 +290,7 @@ fun MovieDetails(
                     }
                     item {
                         LazyRow(
-                            modifier = Modifier.padding(horizontal = 8.dp)
+                            modifier = Modifier.padding(8.dp)
                         ) {
                             items(data.rolesWithActors) { roleWithActor ->
                                 Column(
@@ -383,18 +354,68 @@ fun MovieDetails(
                     }
                     item {
                         LazyRow(
-                            modifier = Modifier.padding(horizontal = 8.dp)
+                            modifier = Modifier.padding(8.dp)
                         ) {
-                            items(data.awards) {
-                                Text(
-                                    text = "Award ${it.name}, details: ${it.details}",
-                                    fontSize = 12.sp,
-                                    color = Color.White,
-                                    modifier = Modifier.padding(end = 8.dp)
-                                )
+                            items(data.awards) { award ->
+                                Column(
+                                    horizontalAlignment = Alignment.CenterHorizontally,
+                                    modifier = Modifier
+                                        .padding(end = 8.dp)
+                                        .wrapContentSize()
+                                ) {
+                                    AsyncImage(
+                                        model = ImageRequest.Builder(LocalContext.current)
+                                            .data(R.drawable.oscars)
+                                            .build(),
+                                        contentDescription = "Award ${award.details}",
+                                        modifier = Modifier
+                                            .size(130.dp)
+                                            .clip(RoundedCornerShape(8.dp)),
+                                        contentScale = ContentScale.Crop
+                                    )
+                                    Text(
+                                        text = award.name,
+                                        fontSize = 14.sp,
+                                        fontWeight = FontWeight.Bold,
+                                        color = MaterialTheme.colorScheme.onBackground,
+                                        textAlign = TextAlign.Center,
+                                        lineHeight = 16.sp,
+                                        modifier = Modifier
+                                            .padding(top = 1.dp)
+                                            .width(130.dp),
+                                        maxLines = 1,
+                                        overflow = TextOverflow.Ellipsis
+                                    )
+                                    Text(
+                                        text = award.details,
+                                        fontSize = 12.sp,
+                                        color = MaterialTheme.colorScheme.onBackground,
+                                        textAlign = TextAlign.Center,
+                                        lineHeight = 14.sp,
+                                        modifier = Modifier
+                                            .padding(top = 1.dp)
+                                            .width(130.dp),
+                                        maxLines = 3,
+                                        overflow = TextOverflow.Ellipsis
+                                    )
+                                }
                             }
                         }
                     }
+//                    item {
+//                        LazyRow(
+//                            modifier = Modifier.padding(8.dp)
+//                        ) {
+//                            items(data.awards) {
+//                                Text(
+//                                    text = "Award ${it.name}, details: ${it.details}",
+//                                    fontSize = 12.sp,
+//                                    color = Color.White,
+//                                    modifier = Modifier.padding(end = 8.dp)
+//                                )
+//                            }
+//                        }
+//                    }
 //                    items(data.rolesWithActors) {
 //                        Text(
 //                            text = "Actor ${it.actor.name}, played: ${it.role.starring}",
@@ -410,13 +431,21 @@ fun MovieDetails(
 //                            color = Color.White
 //                        )
 //                    }
+                    item {
+                        Box(modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 8.dp, bottom = 8.dp)){
+                            Divider(
+                                modifier = Modifier
+                                    .fillMaxWidth(0.95f)
+                                    .align(Alignment.Center),
+                                thickness = 2.dp,
+                                color = MaterialTheme.colorScheme.surfaceVariant
+                            )
+                        }
+                    }
 
-                    items(data.trailers) {
-                        Text(
-                            text = "Trailer ${it.trailer}",
-                            fontSize = 12.sp,
-                            color = Color.White
-                        )
+                    items(data.trailers) { trailer ->
                     }
 
                     item {
