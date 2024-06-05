@@ -472,10 +472,12 @@ fun MovieDetails(
                                                     scope.launch {
                                                         viewModel.removeUsersTicket(1, show.showId)
                                                     }
+                                                    viewModel.playSound(Sound.CLICK_PLINK)
                                                 } else {
                                                     scope.launch {
                                                         viewModel.addUsersTicket(1, show.showId)
                                                     }
+                                                    viewModel.playSound(Sound.CLICK_DRIP)
                                                 }
                                             },
                                             modifier = Modifier.padding(8.dp),
@@ -487,7 +489,7 @@ fun MovieDetails(
                                         ) {
                                             Text(
                                                 text = localTime.format(DateTimeFormatter.ofPattern("HH:mm")),
-                                                fontSize = 20.sp,
+                                                fontSize = 16.sp,
                                                 color = if (usersMovieTickets.value.contains(show))
                                                     MaterialTheme.colorScheme.onPrimaryContainer
                                                 else MaterialTheme.colorScheme.onSecondaryContainer
