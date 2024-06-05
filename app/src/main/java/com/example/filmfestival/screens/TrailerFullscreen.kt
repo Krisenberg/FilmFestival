@@ -1,5 +1,6 @@
 package com.example.filmfestival.screens
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.pm.ActivityInfo
 import android.graphics.drawable.GradientDrawable.Orientation
@@ -33,6 +34,7 @@ import com.example.filmfestival.composables.YouTubePlayer
 import com.example.filmfestival.utils.NavigationHelper
 import com.example.filmfestival.utils.NavigationRoutes
 
+@SuppressLint("SourceLockedOrientationActivity")
 @Composable
 fun TrailerFullscreen(
     navHelper: NavigationHelper,
@@ -97,6 +99,7 @@ fun TrailerFullscreen(
                     modifier = Modifier.fillMaxSize(),
                     isFullscreen = true,
                     playbackTime = currentPlaybackTime.value,
+                    onUpdatePlaybackTime = { second -> currentPlaybackTime.value = second },
                     onEnterFullscreen = {viewSecondPair ->
                         Log.d("DUPA", "Entering fullscreen: ${viewSecondPair.first}, ${viewSecondPair.second}")
                         fullscreenView.value = viewSecondPair.first

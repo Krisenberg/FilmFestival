@@ -13,23 +13,19 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
-import androidx.navigation.NavGraph.Companion.findStartDestination
-import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.filmfestival.utils.NavigationHelper
 import com.example.filmfestival.utils.NavigationRoutes
 
-sealed class BottomNavItem(val route: NavigationRoutes, val iconOutlined: ImageVector,
+sealed class BottomNavIcon(val route: NavigationRoutes, val iconOutlined: ImageVector,
                            val iconFilled: ImageVector, val label: String){
-    data object Home : BottomNavItem(NavigationRoutes.HOME_SCREEN, Icons.Outlined.Home,
+    data object Home : BottomNavIcon(NavigationRoutes.HOME_SCREEN, Icons.Outlined.Home,
         Icons.Filled.Home, "Home")
-    data object Movies : BottomNavItem(NavigationRoutes.MOVIE_SET, Icons.Outlined.Movie,
+    data object Movies : BottomNavIcon(NavigationRoutes.MOVIE_SET, Icons.Outlined.Movie,
         Icons.Filled.Movie, "Movies")
-    data object Profile : BottomNavItem(NavigationRoutes.USER_PROFILE, Icons.Outlined.PermIdentity,
+    data object Profile : BottomNavIcon(NavigationRoutes.USER_PROFILE, Icons.Outlined.PermIdentity,
         Icons.Filled.PermIdentity, "Profile")
 }
 
@@ -41,21 +37,21 @@ fun BottomNavBar(
         containerColor = Color.Transparent
     ){
         val currentRoute = navHelper.getCurrentRoute()
+        val navIcons = listOf(BottomNavIcon.Movies, BottomNavIcon.Home, BottomNavIcon.Profile)
 
-        val navIcons = listOf(BottomNavItem.Movies, BottomNavItem.Home, BottomNavItem.Profile)
-        navIcons.forEach { item ->
+        navIcons.forEach { icon ->
             NavigationBarItem(
-                selected = currentRoute == item.route.name,
+                selected = currentRoute == icon.route.name,
                 onClick = {
-                    navHelper.navigateBottomBar(item.route)
+                    navHelper.navigateBottomBar(icon.route)
                 },
                 icon = { Icon (
-                    imageVector = if (currentRoute == item.route.name) { item.iconFilled } else item.iconOutlined,
-                    contentDescription = item.label,
+                    imageVector = if (currentRoute == icon.route.name) { icon.iconFilled } else icon.iconOutlined,
+                    contentDescription = icon.label,
                     tint = MaterialTheme.colorScheme.onBackground
                 )},
                 label = { Text(
-                    text = item.label,
+                    text = icon.label,
                     fontSize = 12.sp,
                     color = MaterialTheme.colorScheme.onBackground
                 )},

@@ -21,11 +21,12 @@ fun YouTubePlayer(
     lifecycleOwner: LifecycleOwner,
     modifier: Modifier,
     isFullscreen: Boolean,
-    playbackTime: Float?,
+    playbackTime: Float,
+    onUpdatePlaybackTime: (Float) -> Unit,
     onEnterFullscreen: (Pair<View, Float>) -> Unit,
     onExitFullscreen: () -> Unit
 ){
-    val currentPlaybackTime = remember { mutableFloatStateOf(playbackTime ?: 0f) }
+    val currentPlaybackTime = remember { mutableFloatStateOf(playbackTime) }
 
     AndroidView(
         modifier = modifier,
@@ -45,8 +46,7 @@ fun YouTubePlayer(
 //                        if (isFullscreen)
 //                            youTubePlayer.toggleFullscreen()
                         if (isFullscreen) {
-                            Log.d("DUPA", "Playback time: ${playbackTime!!}")
-                            youTubePlayer.loadVideo(youtubeVideoId, playbackTime!!)
+                            youTubePlayer.loadVideo(youtubeVideoId, playbackTime)
                             post {
                                 youTubePlayer.toggleFullscreen()
                             }
@@ -60,7 +60,7 @@ fun YouTubePlayer(
                             ) {
                                 super.onCurrentSecond(youTubePlayer, second)
                                 currentPlaybackTime.floatValue = second
-                                Log.d("DUPA", "Second: ${currentPlaybackTime.floatValue}")
+                                onUpdatePlaybackTime(second)
                             }
                         })
                     }

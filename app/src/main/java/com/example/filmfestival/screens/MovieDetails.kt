@@ -90,13 +90,13 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.filmfestival.MainViewModel
 import com.example.filmfestival.R
-import com.example.filmfestival.composables.BottomNavBar
 import com.example.filmfestival.composables.YouTubePlayer
 import com.example.filmfestival.models.Show
 import com.example.filmfestival.models.dto.MovieAllData
 import com.example.filmfestival.utils.NavigationHelper
 import com.example.filmfestival.utils.NavigationRoutes
 import com.example.filmfestival.utils.Sound
+import com.example.filmfestival.composables.BottomNavBar
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.FullscreenListener
@@ -502,7 +502,8 @@ fun MovieDetails(
                                         .padding(8.dp)
                                         .clip(RoundedCornerShape(16.dp)),
                                     isFullscreen = false,
-                                    playbackTime = null,
+                                    playbackTime = 0f,
+                                    onUpdatePlaybackTime = {},
                                     onEnterFullscreen = {
                                         navHelper.navigateToTrailerFullscreen (
                                             route = NavigationRoutes.TRAILER_FULLSCREEN,
