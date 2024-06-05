@@ -1,6 +1,3 @@
-import org.jetbrains.kotlin.fir.expressions.FirEmptyArgumentList.arguments
-import org.jetbrains.kotlin.fir.resolve.calls.ResolvedCallArgument.DefaultArgument.arguments
-import org.jetbrains.kotlin.resolve.calls.model.ResolvedCallArgument.DefaultArgument.arguments
 
 plugins {
     alias(libs.plugins.androidApplication)
@@ -75,21 +72,17 @@ dependencies {
     implementation(libs.androidx.material)
     implementation(libs.androidx.media3)
     implementation(libs.coil)
-
     implementation(libs.room.runtime)
     implementation(libs.room.ktx)
     implementation(libs.androidx.media3.ui)
-//    implementation(libs.androidx.constraintlayout.compose.android)
+    implementation(libs.youtube.player)
+
     annotationProcessor(libs.room.compiler)
     ksp(libs.room.compiler)
 
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
     implementation(libs.hilt.navigation)
-
-//    implementation("com.pierfrancescosoffritti.androidyoutubeplayer:core:12.1.0")
-    implementation( "com.pierfrancescosoffritti.androidyoutubeplayer:chromecast-sender:0.28")
-
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
@@ -98,5 +91,4 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
-
 }
