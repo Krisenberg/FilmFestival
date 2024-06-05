@@ -86,21 +86,18 @@ fun CreateNavigationGraph(
             EditAvatar(navHelper = navHelper, viewModel = viewModel)
         }
         composable(
-            route = "${NavigationRoutes.TRAILER_FULLSCREEN.name}/{trailerId}/{movieId}/{playbackTime}",
+            route = "${NavigationRoutes.TRAILER_FULLSCREEN.name}/{trailerId}/{playbackTime}",
             arguments = listOf(
                 navArgument(name = "trailerId") { type = NavType.StringType},
-                navArgument(name = "movieId") { type = NavType.IntType},
                 navArgument(name = "playbackTime") { type = NavType.StringType}
             )
         ){ args ->
             val trailerId = args.arguments?.getString("trailerId")
-            val movieId = args.arguments?.getInt("movieId")
             val playbackTime = args.arguments?.getString("playbackTime")!!.toFloat()
 
             TrailerFullscreen(
                 navHelper = navHelper,
                 trailerId = trailerId!!,
-                movieId = movieId!!,
                 playbackTime = playbackTime
             )
         }

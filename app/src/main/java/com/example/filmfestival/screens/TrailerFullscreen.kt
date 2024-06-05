@@ -39,31 +39,14 @@ import com.example.filmfestival.utils.NavigationRoutes
 fun TrailerFullscreen(
     navHelper: NavigationHelper,
     trailerId: String,
-    movieId: Int,
     playbackTime: Float
 ) {
-//    val activity = (LocalContext.current as Activity)
-//    activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
-
-//    lateinit var youTubePlayer: YouTubePlayer
-//
-//    var isFullscreen = false
-//    val onBackPressedCallback = object : OnBackPressedCallback(true) {
-//        override fun handleOnBackPressed() {
-//            if (isFullscreen) {
-//                // if the player is in fullscreen, exit fullscreen
-//                youTubePlayer.toggleFullscreen()
-//            } else {
-//                finish()
-//            }
-//        }
-//    }
     val activity = (LocalContext.current as Activity)
     activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
 
     BackHandler {
         activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
-        navHelper.navigateWithId(NavigationRoutes.MOVIE_DETAILS, movieId)
+        navHelper.goBack()
     }
 
     Scaffold(
@@ -77,11 +60,11 @@ fun TrailerFullscreen(
         val currentPlaybackTimeSaver = run {
             val playbackTimeKey = "playbackTime"
             mapSaver(
-                save = {
-                    mapOf(playbackTimeKey to it)
+                save = { value ->
+                    mapOf(playbackTimeKey to value)
                 },
-                restore = {
-                    it[playbackTimeKey] as Float
+                restore = { map ->
+                    map[playbackTimeKey] as Float
                 }
             )
         }
@@ -101,14 +84,12 @@ fun TrailerFullscreen(
                     playbackTime = currentPlaybackTime.value,
                     onUpdatePlaybackTime = { second -> currentPlaybackTime.value = second },
                     onEnterFullscreen = {viewSecondPair ->
-                        Log.d("DUPA", "Entering fullscreen: ${viewSecondPair.first}, ${viewSecondPair.second}")
                         fullscreenView.value = viewSecondPair.first
                         currentPlaybackTime.value = viewSecondPair.second
                     },
                     onExitFullscreen = {
-//                activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
                         activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
-                        navHelper.navigateWithId(NavigationRoutes.MOVIE_DETAILS, movieId)
+                        navHelper.goBack()
                     }
                 )
             }

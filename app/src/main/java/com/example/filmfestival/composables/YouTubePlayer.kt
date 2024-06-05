@@ -1,6 +1,5 @@
 package com.example.filmfestival.composables
 
-import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import androidx.compose.runtime.Composable
@@ -43,8 +42,6 @@ fun YouTubePlayer(
 
                 initialize(object: AbstractYouTubePlayerListener(){
                     override fun onReady(youTubePlayer: YouTubePlayer) {
-//                        if (isFullscreen)
-//                            youTubePlayer.toggleFullscreen()
                         if (isFullscreen) {
                             youTubePlayer.loadVideo(youtubeVideoId, playbackTime)
                             post {
