@@ -9,9 +9,6 @@ class MovieRepository @Inject constructor(
     private val movieDao: MovieDao
 ){
 
-//    val allMoviesOrderedByTitle: Flow<List<Movie>> = movieDao.getMoviesOrderedByTitle()
-
-
     suspend fun getMovieById(movieId: Int) = movieDao.getMovie(movieId)
 
     suspend fun moviesIdTitlePoster(): List<Triple<Int, String, String>> =

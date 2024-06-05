@@ -26,13 +26,6 @@ class NavigationHelper (
         }
     }
 
-    fun navigateWithStr(route: NavigationRoutes, arg: String) {
-        navController.navigate("${route.name}/${arg}") {
-            launchSingleTop = true
-            restoreState = true
-        }
-    }
-
     fun navigateToTrailerFullscreen(route: NavigationRoutes, trailerId: String, movieId: Int, playbackTime: Float){
         navController.navigate("${route.name}/${trailerId}/${movieId}/${playbackTime}"){
             launchSingleTop = true
@@ -48,10 +41,6 @@ class NavigationHelper (
     }
 
     fun navigateBottomBar(route: NavigationRoutes) {
-//        val wasPopped = navController.popBackStack(navController.graph.findNode(route.name)!!.id, false)
-//        if (!wasPopped){
-//
-//        }
         navController.navigate(route.name) {
 //            navController.popBackStack(
 //                destinationId = navController.graph.findStartDestination().id,

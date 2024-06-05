@@ -2,10 +2,8 @@ package com.example.filmfestival
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.filmfestival.data.MovieDao
 import com.example.filmfestival.data.MovieRepository
 import com.example.filmfestival.data.UserRepository
-import com.example.filmfestival.models.Actor
 import com.example.filmfestival.models.Movie
 import com.example.filmfestival.models.Show
 import com.example.filmfestival.utils.Sound
@@ -28,7 +26,6 @@ class MainViewModel @Inject constructor(
 ): ViewModel() {
 
     suspend fun getMoviesIdTitlePoster() = movieRepository.moviesIdTitlePoster()
-
     suspend fun getActorsIdPhoto() = movieRepository.actorsIdPhoto()
     suspend fun getMovieAllData(movieId: Int) = movieRepository.movieAllData(movieId)
 
@@ -56,12 +53,9 @@ class MainViewModel @Inject constructor(
             }
         }
 
-
     suspend fun addUsersTicket(userId: Int, showId: Int) = userRepository.addUserTicket(userId, showId)
     suspend fun removeUsersTicket(userId: Int, showId: Int) = userRepository.removeUsersTicket(userId, showId)
-
     suspend fun getUserWatchlistMovies(userId: Int) = userRepository.getUserWatchlistMovies(userId)
-
     suspend fun checkIfMovieIsOnUsersWatchlist(userId: Int, movieId: Int) = userRepository.checkIfMovieIsOnUsersWatchlist(userId, movieId)
     suspend fun addMovieToUsersWatchlist(userId: Int, movieId: Int) = userRepository.addToUsersWatchlist(userId, movieId)
     suspend fun removeMovieFromUsersWatchlist(userId: Int, movieId: Int) = userRepository.removeFromUsersWatchlist(userId, movieId)

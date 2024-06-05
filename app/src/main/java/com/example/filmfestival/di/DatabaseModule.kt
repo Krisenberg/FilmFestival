@@ -41,7 +41,6 @@ object DatabaseModule {
                 Pair("Movie_data_loader.txt", "Movie (movieId, title, moviePoster, " +
                         "moviePhoto, year, duration, genre, description)"),
                 Pair("MovieAwardCrossRef_data_loader.txt", "MovieAwardCrossRef (movieId, awardId)"),
-//                Pair("MovieRoleCrossRef_data_loader.txt", "MovieRoleCrossRef (movieId, roleId)"),
                 Pair("Role_data_loader.txt", "Role (roleId, movieId, actorId, starring)"),
                 Pair("Show_data_loader.txt", "Show (showId, movieId, dateTime)"),
                 Pair("TicketCrossRef_data_loader.txt", "TicketCrossRef (userId, showId)"),

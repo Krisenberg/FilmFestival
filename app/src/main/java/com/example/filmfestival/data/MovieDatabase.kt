@@ -45,9 +45,8 @@ abstract class MovieDatabase: RoomDatabase() {
     companion object {
         val migration1To2 = object : Migration(1, 2) {
             override fun migrate(db: SupportSQLiteDatabase) {
-                db.execSQL(
-                    "INSERT INTO Actor (actorId, name, photo) " +
-                            "VALUES (10,\"Adam Smith\",\"examplelink\")"
+                db.execSQL("INSERT INTO Actor (actorId, name, photo)" +
+                        "VALUES (10,\"Adam Smith\",\"examplelink\")"
                 )
             }
         }

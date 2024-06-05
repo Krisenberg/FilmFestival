@@ -1,7 +1,6 @@
 package com.example.filmfestival.models
 
 import androidx.room.Entity
-import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 
 @Entity(tableName = "Show")

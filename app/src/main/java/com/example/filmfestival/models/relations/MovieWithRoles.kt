@@ -2,7 +2,6 @@ package com.example.filmfestival.models.relations
 
 import androidx.room.Embedded
 import androidx.room.Relation
-import com.example.filmfestival.models.Actor
 import com.example.filmfestival.models.Movie
 import com.example.filmfestival.models.Role
 

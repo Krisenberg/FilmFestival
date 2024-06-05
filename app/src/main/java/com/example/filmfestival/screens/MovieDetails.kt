@@ -94,7 +94,6 @@ import com.example.filmfestival.composables.BottomNavBar
 import com.example.filmfestival.composables.YouTubePlayer
 import com.example.filmfestival.models.Show
 import com.example.filmfestival.models.dto.MovieAllData
-import com.example.filmfestival.ui.theme.WhiteText
 import com.example.filmfestival.utils.NavigationHelper
 import com.example.filmfestival.utils.NavigationRoutes
 import com.example.filmfestival.utils.Sound
@@ -292,7 +291,7 @@ fun MovieDetails(
                             Text(
                                 text = data.movie.description,
                                 fontSize = 20.sp,
-                                color = WhiteText,
+                                color = MaterialTheme.colorScheme.onBackground,
                                 modifier = Modifier.padding(4.dp)
                             )
                         }

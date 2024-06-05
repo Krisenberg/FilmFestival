@@ -30,7 +30,6 @@ class SoundManager (
             .path(soundMap[sound]!!.toString())
             .build()
         player.setMediaItem(MediaItem.fromUri(fileUri))
-        Log.d("SoundManager", "Playing sound from URI: $fileUri")
         player.prepare()
         player.play()
     }

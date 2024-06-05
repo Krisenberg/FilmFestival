@@ -32,8 +32,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 //import androidx.constraintlayout.compose.Wrap
 import androidx.navigation.NavController
-import com.example.filmfestival.ui.theme.LightBackground
-import com.example.filmfestival.ui.theme.WhiteText
 import com.example.filmfestival.utils.NavigationHelper
 import com.example.filmfestival.utils.NavigationRoutes
 
@@ -74,7 +72,7 @@ fun HomeScreen(
             Text(
                 text = "News",
                 fontSize = 36.sp,
-                color = WhiteText
+                color = MaterialTheme.colorScheme.onBackground
             )
             Divider(
                 color = MaterialTheme.colorScheme.surfaceVariant,
@@ -142,7 +140,7 @@ fun NewsItem(
         Spacer(modifier = Modifier.height(12.dp))
         Text(
             text = news.date,
-            color = WhiteText,
+            color = MaterialTheme.colorScheme.onBackground,
             fontSize = 14.sp,
             modifier = Modifier.padding(start = 24.dp) // Add padding for date
         )
@@ -159,7 +157,7 @@ fun NewsItem(
 //            ){
                 Text(
                     text = news.text,
-                    color = WhiteText,
+                    color = MaterialTheme.colorScheme.onBackground,
                     fontSize = 18.sp,
                     textAlign = TextAlign.Center,
                     overflow = TextOverflow.Clip,

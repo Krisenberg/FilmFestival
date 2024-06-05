@@ -13,18 +13,16 @@ class UserRepository @Inject constructor(
     private val userDao: UserDao,
     private val movieDao: MovieDao,
     private val watchlistDao: WatchlistDao,
-    private val showDao: ShowDao,
     private val ticketDao: TicketDao
 ){
-
-//    val allMoviesOrderedByTitle: Flow<List<Movie>> = movieDao.getMoviesOrderedByTitle()
-
     fun getUsername(userId: Int): Flow<String> {
         return userDao.getUsername(userId)
     }
+
     fun getAvatar(userId: Int): Flow<String> {
         return userDao.getAvatar(userId)
     }
+
     suspend fun changeUsername(userId: Int, newUsername: String) {
         userDao.updateUsername(userId, newUsername)
     }

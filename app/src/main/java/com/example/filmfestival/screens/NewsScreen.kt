@@ -36,8 +36,6 @@ import androidx.navigation.NavController
 import com.example.filmfestival.MainViewModel
 import com.example.filmfestival.R
 import com.example.filmfestival.composables.BottomNavBar
-import com.example.filmfestival.ui.theme.LightBackground
-import com.example.filmfestival.ui.theme.WhiteText
 import com.example.filmfestival.utils.NavigationHelper
 
 @Composable
