@@ -111,7 +111,6 @@ fun UserProfile(
         ){
             TopBar(
                 navHelper = navHelper,
-//                navController = navController,
                 modifier = Modifier
                     .padding(10.dp),
                 username = username
@@ -130,9 +129,6 @@ fun UserProfile(
                 currentIndex = selectedTabIndex,
                 updateTabIndex = { newIndex: Int -> selectedTabIndex = newIndex}
             )
-//            ) {
-//                selectedTabIndex = it
-//            }
             Spacer(modifier = Modifier.height(15.dp))
             when(selectedTabIndex) {
                 0 -> { movies.value?.let { data ->
@@ -153,7 +149,6 @@ fun UserProfile(
                             )
                         }
                     }} ?: run {
-                        // Show a loading indicator or placeholder while movieData is null
                         Text(text = "Fetching the data from database...")
                     }
                 }
@@ -170,12 +165,6 @@ fun UserProfile(
                     Tickets (
                     tickets = usersTickets.value,
                     viewModel,
-//                    tickets = listOf(
-//                        Ticket("Dune: Part Two", "22.07.2024", "17:30", painterResource(id = R.drawable.dune)),
-//                        Ticket("Avatar", "29.07.2024", "7:30", painterResource(id = R.drawable.avatar)),
-//                        Ticket("Dune: Part Two", "22.07.2024", "17:30", painterResource(id = R.drawable.dune)),
-//                        Ticket("Avatar", "29.07.2024", "7:30", painterResource(id = R.drawable.avatar))
-//                    ),
                     modifier = Modifier.fillMaxWidth()
                 )}
             }
@@ -210,16 +199,6 @@ fun TopBar(
         Button(
             onClick = {
                 navHelper.navigate(NavigationRoutes.USER_PROFILE_EDIT)
-//                navController.navigate("USER_PROFILE_EDIT/${username}", )
-//                {
-//                    navController.graph.startDestinationRoute?.let { route ->
-//                        popUpTo(route) {
-//                            saveState = true
-//                        }
-//                    }
-//                    launchSingleTop = true
-//                    restoreState = true
-//                }
             },
             colors = ButtonDefaults.outlinedButtonColors(containerColor = Color.Transparent)
         ){
@@ -530,9 +509,3 @@ fun DeleteBackground(swipeProgress: () -> Float) {
         )
     }
 }
-//data class Ticket(
-//    val movieTitle: String,
-//    val date: String,
-//    val time: String,
-//    val poster: Painter
-//)

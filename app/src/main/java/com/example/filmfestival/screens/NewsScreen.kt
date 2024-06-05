@@ -78,19 +78,6 @@ fun NewsScreen(
             verticalArrangement = Arrangement.spacedBy(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-//            Image(
-//                painter = painterResource(id = R.drawable.logo),
-//                contentDescription = "App logo",
-//                modifier = Modifier
-//                    .padding(
-//                        start = 24.dp,
-//                        top = 36.dp,
-//                        end = 24.dp,
-//                        bottom = 36.dp
-//                    )
-//                    .clip(RoundedCornerShape(16.dp))
-////            )
-//            Spacer(modifier = Modifier.height(4.dp))
             Divider(
                 color = MaterialTheme.colorScheme.background,
                 thickness = 2.dp,
@@ -142,42 +129,3 @@ fun NewsScreen(
         }
     }
 }
-
-//@Composable
-//fun NewsScreen(
-//    navHelper: NavigationHelper,
-//    viewModel: MainViewModel,
-//    imageRes: Int,
-//    date: String,
-//    text: String,
-//    description: String
-//){
-//    Scaffold(
-//        bottomBar = { BottomNavBar(navHelper = navHelper) }
-//    ){
-//        paddingValues ->
-//        Column (
-//            modifier = Modifier
-//                .fillMaxSize()
-//                .padding(paddingValues),
-//            verticalArrangement = Arrangement.spacedBy(24.dp),
-//            horizontalAlignment = Alignment.CenterHorizontally
-//        ){
-//            Text(
-//                text = text,
-//                fontSize = 24.sp,
-//                color = WhiteText,
-//                textAlign = TextAlign.Center,
-//                modifier = Modifier.fillMaxWidth()
-//            )
-//            Spacer(modifier = Modifier.height(16.dp))
-//            Text(
-//                text = description,
-//                fontSize = 18.sp,
-//                color = Color.Gray,
-//                textAlign = TextAlign.Center,
-//                modifier = Modifier.fillMaxWidth()
-//            )
-//        }
-//    }
-//}

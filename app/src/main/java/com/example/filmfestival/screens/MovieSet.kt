@@ -118,15 +118,6 @@ fun MovieSet(
                                     NavigationRoutes.MOVIE_DETAILS,
                                     data[index].first
                                 )
-//                                navController.navigate("USER_PROFILE_EDIT/${username}", ) {
-//                                    navController.graph.startDestinationRoute?.let { route ->
-//                                        popUpTo(route) {
-//                                            saveState = true
-//                                        }
-//                                    }
-//                                    launchSingleTop = true
-//                                    restoreState = true
-//                                }
                             },
                         contentAlignment = Alignment.TopCenter
                     ) {

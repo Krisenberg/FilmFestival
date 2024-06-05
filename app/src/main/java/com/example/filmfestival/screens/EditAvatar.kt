@@ -136,7 +136,7 @@ fun EditAvatar(
                 onDismissRequest = { showDialog.value = false },
                 title = {
                     Text(
-                        text = "Czy chcesz zmienić zdjęcie profilowe?",
+                        text = "Do you want to set this image as a profile picture?",
                         textAlign = TextAlign.Center,
                         modifier = Modifier.fillMaxWidth()
                     )
@@ -162,7 +162,7 @@ fun EditAvatar(
                                 .fillMaxWidth()
                                 .padding(bottom = 8.dp)
                         ) {
-                            Text("Zmień", fontWeight = FontWeight.Bold, fontSize = 20.sp)
+                            Text("Yes", fontWeight = FontWeight.Bold, fontSize = 20.sp)
                         }
                         Button(
                             onClick = { showDialog.value = false },
@@ -171,7 +171,7 @@ fun EditAvatar(
                                 contentColor = MaterialTheme.colorScheme.onBackground),
                             modifier = Modifier.fillMaxWidth()
                         ) {
-                            Text("Anuluj", fontWeight = FontWeight.Bold, fontSize = 20.sp)
+                            Text("No", fontWeight = FontWeight.Bold, fontSize = 20.sp)
                         }
                     }
                 }

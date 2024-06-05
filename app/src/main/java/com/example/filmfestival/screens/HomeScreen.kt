@@ -64,11 +64,6 @@ fun HomeScreen(
                     )
                     .clip(RoundedCornerShape(16.dp))
             )
-//        Spacer(
-//            modifier = Modifier
-//                .height(24.dp)
-//                .fillMaxWidth()
-//        )
             Text(
                 text = "News",
                 fontSize = 36.sp,
@@ -94,16 +89,6 @@ fun HomeScreen(
                 NewsItem(newsList[index], navHelper)
                 Spacer(modifier = Modifier.width(16.dp))
             }
-//            LazyRow(
-//                modifier = Modifier
-//                    .padding(paddingValues)
-//            )
-//            {
-//                items(newsList) { news ->
-//                    NewsItem(news)
-//                    Spacer(modifier = Modifier.width(16.dp))
-//                }
-//            }
         }
 
     }
@@ -151,10 +136,6 @@ fun NewsItem(
                 .width(350.dp)
                 .padding(horizontal = 24.dp)
         ) {
-//            Column (
-//                verticalArrangement = Arrangement.Center,
-//                modifier = Modifier.fillMaxSize()
-//            ){
                 Text(
                     text = news.text,
                     color = MaterialTheme.colorScheme.onBackground,
