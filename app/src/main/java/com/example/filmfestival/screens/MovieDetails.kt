@@ -1,8 +1,11 @@
 package com.example.filmfestival.screens
 
 import android.annotation.SuppressLint
+import android.app.Activity
+import android.content.pm.ActivityInfo
 import android.util.Log
 import android.view.View
+import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
@@ -56,13 +59,18 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.mapSaver
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
@@ -83,10 +91,12 @@ import coil.request.ImageRequest
 import com.example.filmfestival.MainViewModel
 import com.example.filmfestival.R
 import com.example.filmfestival.composables.BottomNavBar
+import com.example.filmfestival.composables.YouTubePlayer
 import com.example.filmfestival.models.Show
 import com.example.filmfestival.models.dto.MovieAllData
 import com.example.filmfestival.ui.theme.WhiteText
 import com.example.filmfestival.utils.NavigationHelper
+import com.example.filmfestival.utils.NavigationRoutes
 import com.example.filmfestival.utils.Sound
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener
@@ -104,26 +114,13 @@ fun MovieDetails(
     viewModel: MainViewModel,
     movieId: Int
 ){
+    val trailerFullscreenView = remember { mutableStateOf<View?>(null) }
+//    val isTrailerInFullscreen = rememberSaveable { mutableStateOf(false) }
+//    val trailerPlayerPosition = rememberSaveable { mutableFloatStateOf(0f) }
+//    val trailerKey = rememberSaveable { mutableStateOf<String?>(null) }
+
     Scaffold(
-//        topBar = { TopAppBar(
-//            title = {},
-//            navigationIcon = {
-//                Icon(
-//                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-//                    contentDescription = "Back arrow",
-//                    tint = Color.White
-//                )
-//            },
-//            actions = {
-//                OutlinedButton(onClick = {}) {
-//                    Row {
-//                        Icons.Filled.Add
-//                        Text(text = "Watchlist")
-//                    }
-//                }
-//            }
-//        )},
-        bottomBar = { BottomNavBar(navHelper = navHelper) }
+        bottomBar = { if (trailerFullscreenView.value == null) BottomNavBar(navHelper = navHelper) }
     ) { paddingValues ->
         val scope = rememberCoroutineScope()
 //        val actors = remember { mutableStateOf(listOf<Actor>()) }
@@ -135,6 +132,7 @@ fun MovieDetails(
             .getUsersMovieTickets(1, movieId)
             .collectAsStateWithLifecycle(initialValue = emptyList<Show>())
 
+        val state = rememberLazyListState()
         LaunchedEffect(scope) {
 //            actors.value = viewModel.getActors()
             movieData.value = viewModel.getMovieAllData(movieId)
@@ -147,120 +145,140 @@ fun MovieDetails(
             val screenHeight = configuration.screenHeightDp.dp
             val screenWidth = configuration.screenWidthDp.dp
 
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-//                    .offset(y = -paddingValues.calculateTopPadding())
-            ) {
-                val state = rememberLazyListState()
-                LazyColumn(
-                    state = state,
-                    modifier = Modifier
-                        .fillMaxSize()
-//                        .offset(y = (-50).dp)
-                        .padding(bottom = paddingValues.calculateBottomPadding())
+//            LaunchedEffect(scrollPosition) {
+//                state.scrollToItem(scrollPosition)
+//            }
+            if (trailerFullscreenView.value != null) {
+                Box(modifier = Modifier
+                    .height(screenHeight)
+                    .width(screenWidth)){
+                    AndroidView(
+                        factory = { trailerFullscreenView.value!! },
+                        modifier = Modifier.fillMaxSize()
+                    )
+                }
+//                Box(
+//                    modifier = Modifier.height(screenHeight).width(screenWidth).rotate(90f),
+////                    modifier = Modifier.rotate(90f).fillMaxSize(),
+//                    contentAlignment = Alignment.Center
+//                ) {
+//                    AndroidView(
+//                        modifier = Modifier.height(screenHeight).width(screenWidth),
+//                        factory = { trailerFullscreenView.value!! }
+//                    )
+//                }
+            } else {
+                Box(
+                    modifier = Modifier.fillMaxSize(),
                 ) {
-                    item {
-                        AsyncImage(
-                            modifier = Modifier
-                                .size(
-                                    width = screenWidth,
-                                    height = ((0.55f) * screenHeight)
-                                )
+                    LazyColumn(
+                        state = state,
+                        modifier = Modifier
+                            .fillMaxSize()
+//                        .offset(y = (-50).dp)
+                            .padding(bottom = paddingValues.calculateBottomPadding())
+                    ) {
+                        item {
+                            AsyncImage(
+                                modifier = Modifier
+                                    .size(
+                                        width = screenWidth,
+                                        height = ((0.55f) * screenHeight)
+                                    )
 //                            .fillMaxHeight(2f/3f)
 //                            .fillMaxWidth()
-                                .padding(1.dp),
+                                    .padding(1.dp),
 //                            .clip(RoundedCornerShape(4.dp)),
-                            model = ImageRequest
-                                .Builder(LocalContext.current)
-                                .data(data.movie.moviePhoto)
-                                .build(),
-                            contentDescription = "Photo from ${data.movie.title}",
-                            contentScale = ContentScale.Crop
-                        )
-                    }
-                    item {
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .wrapContentHeight()
-                                .padding(top = 8.dp)
-                        ) {
-                            Column(
-                                modifier = Modifier.fillMaxWidth(),
-                                verticalArrangement = Arrangement.Center,
-                                horizontalAlignment = Alignment.CenterHorizontally
-                            ) {
-                                Text(
-                                    text = data.movie.title.uppercase(),
-                                    fontSize = 40.sp,
-                                    color = MaterialTheme.colorScheme.onBackground,
-                                    textAlign = TextAlign.Center,
-                                    modifier = Modifier.padding(horizontal = 16.dp),
-                                    overflow = TextOverflow.Ellipsis,
-                                    style = TextStyle(lineHeight = 32.sp)
-                                )
-                            }
+                                model = ImageRequest
+                                    .Builder(LocalContext.current)
+                                    .data(data.movie.moviePhoto)
+                                    .build(),
+                                contentDescription = "Photo from ${data.movie.title}",
+                                contentScale = ContentScale.Crop
+                            )
                         }
-                    }
-
-                    item {
-                        Box (
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .wrapContentHeight()
-                                .padding(8.dp)
-                        ){
-                            Row (
+                        item {
+                            Box(
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .wrapContentHeight(),
-                                horizontalArrangement = Arrangement.SpaceEvenly
+                                    .wrapContentHeight()
+                                    .padding(top = 8.dp)
                             ) {
-                                fun formatMovieDuration(minutes: Int): String {
-                                    val hours = minutes.div(60)
-                                    val rest = minutes.mod(60)
-                                    return "${hours}h ${rest}m"
-                                }
-
-                                val dataToDisplay = listOf(
-                                    data.movie.year.toString(),
-                                    formatMovieDuration(data.movie.duration),
-                                    data.movie.genre
-                                )
-                                dataToDisplay.forEach {
-                                    AssistChip(
-                                        onClick = {},
-                                        label = {
-                                            Text(
-                                                text = it,
-                                                fontSize = 20.sp,
-                                                modifier = Modifier.padding(4.dp)
-                                            )
-                                        },
-                                        colors = AssistChipDefaults.assistChipColors(
-                                            containerColor = MaterialTheme.colorScheme.secondaryContainer,
-                                            labelColor = MaterialTheme.colorScheme.onSecondaryContainer
-                                        )
+                                Column(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    verticalArrangement = Arrangement.Center,
+                                    horizontalAlignment = Alignment.CenterHorizontally
+                                ) {
+                                    Text(
+                                        text = data.movie.title.uppercase(),
+                                        fontSize = 40.sp,
+                                        color = MaterialTheme.colorScheme.onBackground,
+                                        textAlign = TextAlign.Center,
+                                        modifier = Modifier.padding(horizontal = 16.dp),
+                                        overflow = TextOverflow.Ellipsis,
+                                        style = TextStyle(lineHeight = 32.sp)
                                     )
                                 }
                             }
                         }
-                    }
 
-                    item {
-                        Box(modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(top = 8.dp, bottom = 8.dp)){
-                            Divider(
+                        item {
+                            Box (
                                 modifier = Modifier
-                                    .fillMaxWidth(0.95f)
-                                    .align(Alignment.Center),
-                                thickness = 2.dp,
-                                color = MaterialTheme.colorScheme.surfaceVariant
-                            )
+                                    .fillMaxWidth()
+                                    .wrapContentHeight()
+                                    .padding(8.dp)
+                            ){
+                                Row (
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .wrapContentHeight(),
+                                    horizontalArrangement = Arrangement.SpaceEvenly
+                                ) {
+                                    fun formatMovieDuration(minutes: Int): String {
+                                        val hours = minutes.div(60)
+                                        val rest = minutes.mod(60)
+                                        return "${hours}h ${rest}m"
+                                    }
+
+                                    val dataToDisplay = listOf(
+                                        data.movie.year.toString(),
+                                        formatMovieDuration(data.movie.duration),
+                                        data.movie.genre
+                                    )
+                                    dataToDisplay.forEach {
+                                        AssistChip(
+                                            onClick = {},
+                                            label = {
+                                                Text(
+                                                    text = it,
+                                                    fontSize = 20.sp,
+                                                    modifier = Modifier.padding(4.dp)
+                                                )
+                                            },
+                                            colors = AssistChipDefaults.assistChipColors(
+                                                containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                                                labelColor = MaterialTheme.colorScheme.onSecondaryContainer
+                                            )
+                                        )
+                                    }
+                                }
+                            }
                         }
-                    }
+
+                        item {
+                            Box(modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(top = 8.dp, bottom = 8.dp)){
+                                Divider(
+                                    modifier = Modifier
+                                        .fillMaxWidth(0.95f)
+                                        .align(Alignment.Center),
+                                    thickness = 2.dp,
+                                    color = MaterialTheme.colorScheme.surfaceVariant
+                                )
+                            }
+                        }
 
                     item {
                         Box(
@@ -444,35 +462,75 @@ fun MovieDetails(
 //                            color = Color.White
 //                        )
 //                    }
-                    item {
-                        Box(modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(top = 8.dp, bottom = 8.dp)){
-                            Divider(
-                                modifier = Modifier
-                                    .fillMaxWidth(0.95f)
-                                    .align(Alignment.Center),
-                                thickness = 2.dp,
-                                color = MaterialTheme.colorScheme.surfaceVariant
-                            )
-                        }
-                    }
-                    item {
-                        Text(
-                            text = "Trailer",
-                            fontSize = 20.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = Color.White,
-                            modifier = Modifier.padding(8.dp)
-                        )
-                    }
-                    items(data.trailers) { trailer ->
-                        Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
-                            Column {
-                                YouTubePlayer(youtubeVideoId = trailer.trailer, lifecycleOwner = LocalLifecycleOwner.current)
+                        item {
+                            Box(modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(top = 8.dp, bottom = 8.dp)){
+                                Divider(
+                                    modifier = Modifier
+                                        .fillMaxWidth(0.95f)
+                                        .align(Alignment.Center),
+                                    thickness = 2.dp,
+                                    color = MaterialTheme.colorScheme.surfaceVariant
+                                )
                             }
                         }
-                    }
+                        item {
+                            Text(
+                                text = "Trailer",
+                                fontSize = 20.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = Color.White,
+                                modifier = Modifier.padding(8.dp)
+                            )
+                        }
+                        items(data.trailers) { trailer ->
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .padding(bottom = 10.dp)
+                                    .background(
+                                        color = MaterialTheme.colorScheme.background
+                                    ),
+//                                backgroudC = MaterialTheme.colorScheme.background
+                            ){
+//                                val activity = (LocalContext.current as Activity)
+                                YouTubePlayer(
+                                    youtubeVideoId = trailer.trailer,
+                                    lifecycleOwner = LocalLifecycleOwner.current,
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(8.dp)
+                                        .clip(RoundedCornerShape(16.dp)),
+                                    isFullscreen = false,
+                                    playbackTime = null,
+                                    onEnterFullscreen = {
+                                        navHelper.navigateToTrailerFullscreen (
+                                            route = NavigationRoutes.TRAILER_FULLSCREEN,
+                                            trailerId = trailer.trailer,
+                                            movieId = movieId,
+                                            playbackTime = it.second
+                                        )
+//                                        navHelper.navigateWithId(NavigationRoutes.MOVIE_DETAILS, movieId)
+                                    },
+                                    onExitFullscreen = {}
+                                )
+//                                YouTubePlayer(
+//                                    youtubeVideoId = trailer.trailer,
+//                                    lifecycleOwner = LocalLifecycleOwner.current,
+//                                    isFullscreen = (trailerFullscreenView.value != null),
+////                                    startPosition = trailerPlayerPosition.floatValue,
+//                                    changeFullscreenView = { view ->
+////                                        if (view == null)
+////                                            activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
+////                                        else
+////                                            activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+//                                        trailerFullscreenView.value = view
+////                                        trailerKey.value = trailer.trailer
+//                                    }
+//                                )
+                            }
+                        }
 
                     item {
                         val showsGroupedByDate = viewModel.groupShowsByDate(data.shows)
@@ -525,20 +583,20 @@ fun MovieDetails(
                                                 containerColor = if (usersMovieTickets.value.contains(show))
                                                     MaterialTheme.colorScheme.primaryContainer
                                                     else MaterialTheme.colorScheme.secondaryContainer
-                                            )
-                                        ) {
-                                            Text(
-                                                text = localTime.format(DateTimeFormatter.ofPattern("HH:mm")),
-                                                fontSize = 20.sp,
-                                                color = if (usersMovieTickets.value.contains(show))
-                                                    MaterialTheme.colorScheme.onPrimaryContainer
+                                                )
+                                            ) {
+                                                Text(
+                                                    text = localTime.format(DateTimeFormatter.ofPattern("HH:mm")),
+                                                    fontSize = 20.sp,
+                                                    color = if (usersMovieTickets.value.contains(show))
+                                                        MaterialTheme.colorScheme.onPrimaryContainer
                                                     else MaterialTheme.colorScheme.onSecondaryContainer
-                                            )
+                                                )
+                                            }
                                         }
                                     }
                                 }
                             }
-                        }
 //                        val inputDateString = it.dateTime
 //                        val test = LocalDateTime.parse(inputDateString, DateTimeFormatter.ISO_DATE_TIME)
 //                        val test2 = test.format(DateTimeFormatter.ofPattern("HH:mm dd.MM.yyyy"))
@@ -547,88 +605,88 @@ fun MovieDetails(
 //                            fontSize = 12.sp,
 //                            color = Color.White
 //                        )
+                        }
                     }
-                }
-                val showTitleOnTopBar by remember {
-                    derivedStateOf {
-                        state.firstVisibleItemIndex >= 3
+                    val showTitleOnTopBar by remember {
+                        derivedStateOf {
+                            state.firstVisibleItemIndex >= 3
+                        }
                     }
-                }
-                val makeTopBarTransparent by remember {
-                    derivedStateOf {
-                        state.firstVisibleItemIndex == 0
+                    val makeTopBarTransparent by remember {
+                        derivedStateOf {
+                            state.firstVisibleItemIndex == 0
+                        }
                     }
-                }
-                val topBarTitle = remember { mutableStateOf("") }
-                LaunchedEffect(showTitleOnTopBar) {
-                    Log.d("SCROLL_STATE", "show: $showTitleOnTopBar")
+                    val topBarTitle = remember { mutableStateOf("") }
+                    LaunchedEffect(showTitleOnTopBar) {
+                        Log.d("SCROLL_STATE", "show: $showTitleOnTopBar")
 //                    if (firstItemVisible >= 4)
 //                        topBarTitle.value = data.movie.title
 //                    else
 //                        topBarTitle.value = ""
-                }
-                TopAppBar(
-                    title = {
-                        AnimatedVisibility(
-                            visible = showTitleOnTopBar,
-                            exit = slideOutVertically() + fadeOut(),
-                            enter = slideInVertically() + fadeIn()
-                        ){
-                            Text(
-                                text = data.movie.title,
-                                color = MaterialTheme.colorScheme.onBackground
-                            )
-                        }
-                    },
-                    navigationIcon = {
-                        IconButton(
-                            onClick = { navHelper.goBack() },
-                            modifier = Modifier.padding(start = 8.dp)
-                        ) {
-                            Icon(
-                                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                                contentDescription = "Back arrow",
-                                tint = MaterialTheme.colorScheme.onBackground
-                            )
-                        }
-                    },
-                    actions = {
+                    }
+                    TopAppBar(
+                        title = {
+                            AnimatedVisibility(
+                                visible = showTitleOnTopBar,
+                                exit = slideOutVertically() + fadeOut(),
+                                enter = slideInVertically() + fadeIn()
+                            ){
+                                Text(
+                                    text = data.movie.title,
+                                    color = MaterialTheme.colorScheme.onBackground
+                                )
+                            }
+                        },
+                        navigationIcon = {
+                            IconButton(
+                                onClick = { navHelper.goBack() },
+                                modifier = Modifier.padding(start = 8.dp)
+                            ) {
+                                Icon(
+                                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                                    contentDescription = "Back arrow",
+                                    tint = MaterialTheme.colorScheme.onBackground
+                                )
+                            }
+                        },
+                        actions = {
 //                        var color by remember { mutableStateOf(Color.Transparent.copy(alpha = 0.5f)) }
 //                        val primaryColor = MaterialTheme.colorScheme.primary
 
 //                        val color = if (isPressed) Color.Blue else Color.Yellow
-                        IconButton(
-                            onClick = {
-                                if (isOnWatchlist.value!!) {
-                                    scope.launch {
-                                        viewModel.removeMovieFromUsersWatchlist(1, movieId)
+                            IconButton(
+                                onClick = {
+                                    if (isOnWatchlist.value!!) {
+                                        scope.launch {
+                                            viewModel.removeMovieFromUsersWatchlist(1, movieId)
+                                        }
+                                        isOnWatchlist.value = false
+                                        viewModel.playSound(Sound.CLICK_PLINK)
+                                    } else {
+                                        scope.launch {
+                                            viewModel.addMovieToUsersWatchlist(1, movieId)
+                                        }
+                                        isOnWatchlist.value = true
+                                        viewModel.playSound(Sound.CLICK_DRIP)
                                     }
-                                    isOnWatchlist.value = false
-                                    viewModel.playSound(Sound.CLICK_PLINK)
+                                },
+                                enabled = (isOnWatchlist.value != null)
+                            ){
+                                if (isOnWatchlist.value != null && isOnWatchlist.value!!) {
+                                    Icon(
+                                        imageVector = Icons.Filled.Favorite,
+                                        contentDescription = "Remove from watchlist",
+                                        tint = MaterialTheme.colorScheme.primaryContainer
+                                    )
                                 } else {
-                                    scope.launch {
-                                        viewModel.addMovieToUsersWatchlist(1, movieId)
-                                    }
-                                    isOnWatchlist.value = true
-                                    viewModel.playSound(Sound.CLICK_DRIP)
+                                    Icon(
+                                        imageVector = Icons.Filled.FavoriteBorder,
+                                        contentDescription = "Add to watchlist",
+                                        tint = MaterialTheme.colorScheme.secondaryContainer
+                                    )
                                 }
-                            },
-                            enabled = (isOnWatchlist.value != null)
-                        ){
-                            if (isOnWatchlist.value != null && isOnWatchlist.value!!) {
-                                Icon(
-                                    imageVector = Icons.Filled.Favorite,
-                                    contentDescription = "Remove from watchlist",
-                                    tint = MaterialTheme.colorScheme.primaryContainer
-                                )
-                            } else {
-                                Icon(
-                                    imageVector = Icons.Filled.FavoriteBorder,
-                                    contentDescription = "Add to watchlist",
-                                    tint = MaterialTheme.colorScheme.secondaryContainer
-                                )
                             }
-                        }
 //                        Button(
 //                            onClick = { scope.launch {
 //                                viewModel.addMovieToUsersWatchlist(1,movieId)
@@ -653,10 +711,11 @@ fun MovieDetails(
 ////                                color = Color.White
 //                            )
 //                        }
-                    },
-                    colors = if (makeTopBarTransparent) TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.background.copy(alpha = 0.25f)) else TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.background),
-                    modifier = Modifier.align(Alignment.TopCenter)
-                )
+                        },
+                        colors = if (makeTopBarTransparent) TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.background.copy(alpha = 0.25f)) else TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.background),
+                        modifier = Modifier.align(Alignment.TopCenter)
+                    )
+                }
             }
         } ?: run {
             // Show a loading indicator or placeholder while movieData is null
@@ -668,10 +727,12 @@ fun MovieDetails(
 //@Composable
 //fun YouTubePlayer(
 //    youtubeVideoId: String,
-//    lifecycleOwner: LifecycleOwner
+//    lifecycleOwner: LifecycleOwner,
+//    isFullscreen: Boolean,
+////    startPosition: Float,
+//    changeFullscreenView: (View?) -> Unit
 //){
-//    var isFullscreen by remember { mutableStateOf(false) }
-//
+////    val activity = (LocalContext.current as Activity)
 //    AndroidView(
 //        modifier = Modifier
 //            .fillMaxWidth()
@@ -680,120 +741,42 @@ fun MovieDetails(
 //        factory = { context->
 //            YouTubePlayerView(context = context).apply {
 //                lifecycleOwner.lifecycle.addObserver(this)
+//                enableAutomaticInitialization = false
 //
-//                addYouTubePlayerListener(object: AbstractYouTubePlayerListener(){
+//                val iFramePlayerOptions: IFramePlayerOptions = IFramePlayerOptions.Builder()
+//                    .controls(1)
+//                    .rel(0)
+//                    .fullscreen(1)
+//                    .build();
+//
+//                initialize(object: AbstractYouTubePlayerListener(){
 //                    override fun onReady(youTubePlayer: YouTubePlayer) {
-//                        youTubePlayer.loadVideo(youtubeVideoId, 0f)
+//                        youTubePlayer.cueVideo(youtubeVideoId, 0f)
+//                        youTubePlayer.toggleFullscreen()
+//                    }
+//                }, iFramePlayerOptions)
+//
+//                addFullscreenListener(object: FullscreenListener{
+//                    override fun onEnterFullscreen(
+//                        fullscreenView: View,
+//                        exitFullscreen: () -> Unit
+//                    ) {
+////                        fullscreenView.rotation = 90f
+//
+//                        // Set the layout parameters to fill the whole screen
+////                        fullscreenView.layoutParams = ViewGroup.LayoutParams(
+////                            ViewGroup.LayoutParams.MATCH_PARENT,
+////                            ViewGroup.LayoutParams.MATCH_PARENT
+////                        )
+//                        changeFullscreenView(fullscreenView)
+////                        activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+//                    }
+//                    override fun onExitFullscreen() {
+//                        changeFullscreenView(null)
+////                        activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
 //                    }
 //                })
-//
 //            }
 //        }
 //    )
 //}
-
-
-@Composable
-fun YouTubePlayer(
-    youtubeVideoId: String,
-    lifecycleOwner: LifecycleOwner,
-) {
-    var isFullscreen by remember { mutableStateOf(false) }
-    var youTubePlayer: YouTubePlayer? by remember { mutableStateOf(null) }
-
-    val context = LocalContext.current
-
-    // Create YouTubePlayerView in remember
-    val youTubePlayerView = remember {
-        YouTubePlayerView(context).apply {
-            enableAutomaticInitialization = false
-        }
-    }
-
-    // Create FrameLayout for fullscreen view
-    val fullscreenViewContainer = remember {
-        FrameLayout(context)
-    }
-
-    // IFramePlayer options
-    val iFramePlayerOptions = IFramePlayerOptions.Builder()
-        .controls(1)
-        .fullscreen(1)
-        .build()
-
-    // Initialize YouTubePlayerView in LaunchedEffect
-    LaunchedEffect(youtubeVideoId) {
-        youTubePlayerView.addFullscreenListener(object : FullscreenListener {
-            override fun onEnterFullscreen(fullscreenView: View, exitFullscreen: () -> Unit) {
-                isFullscreen = true
-
-                youTubePlayerView.visibility = View.GONE
-                fullscreenViewContainer.visibility = View.VISIBLE
-                fullscreenViewContainer.addView(fullscreenView)
-            }
-
-            override fun onExitFullscreen() {
-                isFullscreen = false
-
-                youTubePlayerView.visibility = View.VISIBLE
-                fullscreenViewContainer.visibility = View.GONE
-                fullscreenViewContainer.removeAllViews()
-            }
-        })
-
-        youTubePlayerView.initialize(object : AbstractYouTubePlayerListener() {
-            override fun onReady(player: YouTubePlayer) {
-                youTubePlayer = player
-                player.loadVideo(youtubeVideoId, 0f)
-            }
-        }, iFramePlayerOptions)
-    }
-
-    // Handle back button to exit fullscreen
-    BackHandler(enabled = isFullscreen) {
-        youTubePlayer?.toggleFullscreen()
-    }
-
-    // Jetpack Compose UI
-    Box(modifier = Modifier.fillMaxSize()) {
-        if (!isFullscreen) {
-            AndroidView(
-                factory = { youTubePlayerView },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .aspectRatio(16 / 9f)
-            )
-        } else {
-            AndroidView(
-                factory = { fullscreenViewContainer },
-                modifier = Modifier.fillMaxSize()
-            )
-        }
-
-//        Button(
-//            onClick = {
-//                youTubePlayer?.toggleFullscreen()
-//            },
-//            modifier = Modifier
-//                .align(Alignment.BottomCenter)
-//                .padding(16.dp)
-//        ) {
-//            Text(text = "Enter Fullscreen")
-//        }
-    }
-
-    DisposableEffect(lifecycleOwner) {
-        val observer = androidx.lifecycle.LifecycleEventObserver { _, event ->
-            when (event) {
-                androidx.lifecycle.Lifecycle.Event.ON_DESTROY -> youTubePlayerView.release()
-                else -> {}
-            }
-        }
-
-        lifecycleOwner.lifecycle.addObserver(observer)
-
-        onDispose {
-            lifecycleOwner.lifecycle.removeObserver(observer)
-        }
-    }
-}

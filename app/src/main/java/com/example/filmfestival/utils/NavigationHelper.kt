@@ -33,6 +33,13 @@ class NavigationHelper (
         }
     }
 
+    fun navigateToTrailerFullscreen(route: NavigationRoutes, trailerId: String, movieId: Int, playbackTime: Float){
+        navController.navigate("${route.name}/${trailerId}/${movieId}/${playbackTime}"){
+            launchSingleTop = true
+            restoreState = true
+        }
+    }
+
     fun navigateWithNews(route: NavigationRoutes, imageRes: Int, date: String, text: String, description: String){
         navController.navigate("${route.name}/${imageRes}/${date}/${text}/${description}"){
             launchSingleTop = true

@@ -14,6 +14,7 @@ import com.example.filmfestival.screens.MovieDetails
 import com.example.filmfestival.screens.MovieSet
 import com.example.filmfestival.screens.News
 import com.example.filmfestival.screens.NewsScreen
+import com.example.filmfestival.screens.TrailerFullscreen
 import com.example.filmfestival.screens.UserProfile
 
 enum class NavigationRoutes {
@@ -23,7 +24,8 @@ enum class NavigationRoutes {
     MOVIE_SET,
     USER_PROFILE,
     USER_PROFILE_EDIT,
-    EDIT_AVATAR
+    EDIT_AVATAR,
+    TRAILER_FULLSCREEN
 }
 
 @Composable
@@ -55,6 +57,20 @@ fun CreateNavigationGraph(
         }
         composable(NavigationRoutes.EDIT_AVATAR.name){
             EditAvatar(navHelper = navHelper, viewModel = viewModel)
+        }
+        composable(
+            route = "${NavigationRoutes.TRAILER_FULLSCREEN.name}/{trailerId}/{movieId}/{playbackTime}",
+            arguments = listOf(
+                navArgument(name = "trailerId") { type = NavType.StringType},
+                navArgument(name = "movieId") { type = NavType.IntType},
+                navArgument(name = "playbackTime") { type = NavType.StringType}
+            )
+        ){ args ->
+            val trailerId = args.arguments?.getString("trailerId")
+            val movieId = args.arguments?.getInt("movieId")
+            val playbackTime = args.arguments?.getString("playbackTime")!!.toFloat()
+
+            TrailerFullscreen(navHelper = navHelper, trailerId = trailerId!!, movieId = movieId!!, playbackTime = playbackTime)
         }
         composable(
             route = "${NavigationRoutes.NEWS_DETAILS.name}/{imageRes}/{date}/{text}/{description}",
