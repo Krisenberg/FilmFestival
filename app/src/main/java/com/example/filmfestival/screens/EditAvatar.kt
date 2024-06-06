@@ -43,12 +43,13 @@ import com.example.filmfestival.utils.NavigationHelper
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.example.filmfestival.MainViewModelInterface
 import kotlinx.coroutines.launch
 
 @Composable
 fun EditAvatar(
     navHelper: NavigationHelper,
-    viewModel: MainViewModel,
+    viewModel: MainViewModelInterface,
     modifier: Modifier = Modifier
 ){
     Scaffold(

@@ -68,11 +68,13 @@ import coil.compose.AsyncImage
 import coil.compose.rememberImagePainter
 import coil.request.ImageRequest
 import com.example.filmfestival.MainViewModel
+import com.example.filmfestival.MainViewModelInterface
 import com.example.filmfestival.R
 import com.example.filmfestival.composables.BottomNavBar
 import com.example.filmfestival.models.Movie
 import com.example.filmfestival.models.Show
 import com.example.filmfestival.utils.NavigationHelper
+import com.example.filmfestival.utils.NavigationHelperInterface
 import com.example.filmfestival.utils.NavigationRoutes
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -82,8 +84,8 @@ import java.time.format.DateTimeFormatter
 
 @Composable
 fun UserProfile(
-    navHelper: NavigationHelper,
-    viewModel: MainViewModel
+    navHelper: NavigationHelperInterface,
+    viewModel: MainViewModelInterface
 ){
     Scaffold(
         bottomBar = { BottomNavBar(navHelper = navHelper) }
@@ -98,7 +100,6 @@ fun UserProfile(
 
         val username by viewModel.getUsername(1).collectAsStateWithLifecycle(initialValue = "Loading...")
         val avatarUrl by viewModel.getAvatar(1).collectAsStateWithLifecycle(initialValue = "")
-
 
         LaunchedEffect(scope) {
             movies.value = viewModel.getUserWatchlistMovies(1)
@@ -174,7 +175,7 @@ fun UserProfile(
 
 @Composable
 fun TopBar(
-    navHelper: NavigationHelper,
+    navHelper: NavigationHelperInterface,
     modifier: Modifier = Modifier,
     username : String
 ) {
@@ -304,9 +305,9 @@ fun TabView(
 @Composable
 fun Watchlist(
     watchlist: List<Movie>,
-    navHelper: NavigationHelper,
+    navHelper: NavigationHelperInterface,
     modifier: Modifier = Modifier,
-    viewModel: MainViewModel
+    viewModel: MainViewModelInterface
 ) {
     val coroutineScope = rememberCoroutineScope()
     LazyColumn(
@@ -332,7 +333,7 @@ fun Watchlist(
 }
 
 @Composable
-fun MovieRow(movie: Movie, navHelper: NavigationHelper) {
+fun MovieRow(movie: Movie, navHelper: NavigationHelperInterface) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier.clickable {
@@ -361,7 +362,7 @@ fun MovieRow(movie: Movie, navHelper: NavigationHelper) {
 @Composable
 fun Tickets(
     tickets: List<Triple<Movie, LocalDateTime, Show>>,
-    viewModel: MainViewModel,
+    viewModel: MainViewModelInterface,
     modifier: Modifier = Modifier
 ) {
     val coroutineScope = rememberCoroutineScope()

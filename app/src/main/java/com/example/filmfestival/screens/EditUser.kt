@@ -52,13 +52,14 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.input.pointer.pointerInteropFilter
 import coil.compose.AsyncImage
 import coil.compose.rememberImagePainter
+import com.example.filmfestival.MainViewModelInterface
 import com.example.filmfestival.utils.NavigationRoutes
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun EditUser(
     navHelper: NavigationHelper,
-    viewModel: MainViewModel,
+    viewModel: MainViewModelInterface,
     modifier: Modifier = Modifier
 ) {
     val username by viewModel.getUsername(1).collectAsStateWithLifecycle(initialValue = "")

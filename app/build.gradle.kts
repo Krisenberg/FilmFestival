@@ -76,6 +76,8 @@ dependencies {
     implementation(libs.room.ktx)
     implementation(libs.androidx.media3.ui)
     implementation(libs.youtube.player)
+    testImplementation("junit:junit:4.12")
+    testImplementation("junit:junit:4.12")
 
     annotationProcessor(libs.room.compiler)
     ksp(libs.room.compiler)
@@ -89,6 +91,13 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.ui.test.junit4)
+    androidTestImplementation(libs.mockito.core)
+    androidTestImplementation(libs.mockito.kotlin)
+    androidTestImplementation(libs.kotlinx.coroutines.test)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+
+    testImplementation(libs.mockito.core)
+    testImplementation(libs.mockito.kotlin)
+    testImplementation(libs.kotlinx.coroutines.test)
 }

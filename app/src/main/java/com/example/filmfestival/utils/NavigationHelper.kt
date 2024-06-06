@@ -3,23 +3,23 @@ package com.example.filmfestival.utils
 import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
 
-class NavigationHelper (
+open class NavigationHelper (
     private val navController: NavController
-){
+) : NavigationHelperInterface{
 
-    fun getCurrentRoute(): String? {
+    override fun getCurrentRoute(): String? {
         val navBackStackEntry = navController.currentBackStackEntry
         return navBackStackEntry?.destination?.route
     }
 
-    fun navigate(route: NavigationRoutes) {
+    override fun navigate(route: NavigationRoutes) {
         navController.navigate(route.name) {
             launchSingleTop = true
             restoreState = true
         }
     }
 
-    fun navigateWithId(route: NavigationRoutes, id: Int) {
+    override fun navigateWithId(route: NavigationRoutes, id: Int) {
         navController.navigate("${route.name}/${id}") {
             launchSingleTop = true
             restoreState = true
@@ -40,7 +40,7 @@ class NavigationHelper (
         }
     }
 
-    fun navigateBottomBar(route: NavigationRoutes) {
+    override fun navigateBottomBar(route: NavigationRoutes) {
         navController.navigate(route.name) {
 //            navController.popBackStack(
 //                destinationId = navController.graph.findStartDestination().id,
@@ -54,7 +54,7 @@ class NavigationHelper (
         }
     }
 
-    fun goBack() {
+    override fun goBack() {
         navController.previousBackStackEntry?.savedStateHandle
         navController.popBackStack()
     }

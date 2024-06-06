@@ -23,13 +23,13 @@ class MainViewModel @Inject constructor(
     private val movieRepository: MovieRepository,
     private val userRepository: UserRepository,
     private val soundManager: SoundManager
-): ViewModel() {
+): ViewModel(), MainViewModelInterface {
 
-    suspend fun getMoviesIdTitlePoster() = movieRepository.moviesIdTitlePoster()
-    suspend fun getActorsIdPhoto() = movieRepository.actorsIdPhoto()
-    suspend fun getMovieAllData(movieId: Int) = movieRepository.movieAllData(movieId)
+    override suspend fun getMoviesIdTitlePoster() = movieRepository.moviesIdTitlePoster()
+    override suspend fun getActorsIdPhoto() = movieRepository.actorsIdPhoto()
+    override suspend fun getMovieAllData(movieId: Int) = movieRepository.movieAllData(movieId)
 
-    fun groupShowsByDate(shows: List<Show>): Map<LocalDate, List<Pair<LocalTime, Show>>> {
+    override fun groupShowsByDate(shows: List<Show>): Map<LocalDate, List<Pair<LocalTime, Show>>> {
         return shows.groupBy {
             LocalDateTime.parse(it.dateTime, DateTimeFormatter.ISO_DATE_TIME).toLocalDate()
         }.mapValues { entry ->
@@ -42,9 +42,9 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    fun getUsersMovieTickets(userId: Int, movieId: Int) = userRepository.getUsersMovieTickets(userId, movieId)
+    override fun getUsersMovieTickets(userId: Int, movieId: Int) = userRepository.getUsersMovieTickets(userId, movieId)
 
-    fun getUsersTickets(userId: Int): Flow<List<Triple<Movie, LocalDateTime, Show>>> =
+    override fun getUsersTickets(userId: Int): Flow<List<Triple<Movie, LocalDateTime, Show>>> =
         userRepository.getUsersTickets(userId).map { shows: List<Show> ->
             shows.map { show: Show ->
                 val movie = movieRepository.getMovieById(show.movieId)
@@ -53,32 +53,32 @@ class MainViewModel @Inject constructor(
             }
         }
 
-    suspend fun addUsersTicket(userId: Int, showId: Int) = userRepository.addUserTicket(userId, showId)
-    suspend fun removeUsersTicket(userId: Int, showId: Int) = userRepository.removeUsersTicket(userId, showId)
-    suspend fun getUserWatchlistMovies(userId: Int) = userRepository.getUserWatchlistMovies(userId)
-    suspend fun checkIfMovieIsOnUsersWatchlist(userId: Int, movieId: Int) = userRepository.checkIfMovieIsOnUsersWatchlist(userId, movieId)
-    suspend fun addMovieToUsersWatchlist(userId: Int, movieId: Int) = userRepository.addToUsersWatchlist(userId, movieId)
-    suspend fun removeMovieFromUsersWatchlist(userId: Int, movieId: Int) = userRepository.removeFromUsersWatchlist(userId, movieId)
+    override suspend fun addUsersTicket(userId: Int, showId: Int) = userRepository.addUserTicket(userId, showId)
+    override suspend fun removeUsersTicket(userId: Int, showId: Int) = userRepository.removeUsersTicket(userId, showId)
+    override suspend fun getUserWatchlistMovies(userId: Int) = userRepository.getUserWatchlistMovies(userId)
+    override suspend fun checkIfMovieIsOnUsersWatchlist(userId: Int, movieId: Int) = userRepository.checkIfMovieIsOnUsersWatchlist(userId, movieId)
+    override suspend fun addMovieToUsersWatchlist(userId: Int, movieId: Int) = userRepository.addToUsersWatchlist(userId, movieId)
+    override suspend fun removeMovieFromUsersWatchlist(userId: Int, movieId: Int) = userRepository.removeFromUsersWatchlist(userId, movieId)
 
-    fun playSound(sound: Sound) {
+    override fun playSound(sound: Sound) {
         soundManager.playSound(sound)
     }
 
-    fun getUsername(userId: Int): Flow<String> {
+    override fun getUsername(userId: Int): Flow<String> {
         return userRepository.getUsername(userId)
     }
 
-    fun getAvatar(userId: Int): Flow<String> {
+    override fun getAvatar(userId: Int): Flow<String> {
         return userRepository.getAvatar(userId)
     }
 
-    fun changeUsername(userId: Int, newUsername: String) {
+    override fun changeUsername(userId: Int, newUsername: String) {
         viewModelScope.launch {
             userRepository.changeUsername(userId, newUsername)
         }
     }
 
-    fun changeAvatar(userId: Int, newAvatar: String) {
+    override fun changeAvatar(userId: Int, newAvatar: String) {
         viewModelScope.launch {
             userRepository.changeAvatar(userId, newAvatar)
         }

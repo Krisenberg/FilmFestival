@@ -17,6 +17,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.sp
 import com.example.filmfestival.utils.NavigationHelper
+import com.example.filmfestival.utils.NavigationHelperInterface
 import com.example.filmfestival.utils.NavigationRoutes
 
 sealed class BottomNavIcon(val route: NavigationRoutes, val iconOutlined: ImageVector,
@@ -31,7 +32,7 @@ sealed class BottomNavIcon(val route: NavigationRoutes, val iconOutlined: ImageV
 
 @Composable
 fun BottomNavBar(
-    navHelper: NavigationHelper,
+    navHelper: NavigationHelperInterface,
 ){
     NavigationBar (
         containerColor = Color.Transparent
