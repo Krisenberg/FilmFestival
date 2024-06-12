@@ -1,21 +1,19 @@
 package com.example.filmfestival.screens
 
+import android.util.Log
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithText
-import androidx.compose.ui.test.performGesture
-import androidx.compose.ui.test.performMouseInput
+import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTouchInput
-import androidx.test.espresso.action.ViewActions.swipeLeft
-import com.example.filmfestival.models.Movie
-import com.example.filmfestival.models.Show
-import com.example.filmfestival.repos.FakeMainViewModel
-import com.example.filmfestival.repos.FakeNavigationHelper
+import com.example.filmfestival.FakeMainViewModel
+import com.example.filmfestival.utils.FakeNavigationHelper
 import junit.framework.TestCase.assertTrue
 import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import java.time.LocalDateTime
 
 class UserProfileTest {
 
@@ -24,23 +22,12 @@ class UserProfileTest {
 
     private lateinit var fakeViewModel: FakeMainViewModel
     private lateinit var fakeNavHelper: FakeNavigationHelper
-//    private lateinit var tickets: List<Triple<Movie, LocalDateTime, Show>>
 
     @Before
     fun setUp() {
 
         fakeViewModel = FakeMainViewModel()
         fakeNavHelper = FakeNavigationHelper()
-//        val movie = Movie(1, "Test Movie", "poster.jpg", "photo.jpg", 2024, 160, "Genre", "Description")
-//        val show = Show(1, 1, "2023-06-01T12:00:00")
-//        val ticket = Triple(movie, LocalDateTime.parse(show.dateTime), show)
-//        tickets = listOf(ticket)
-    }
-
-    @Test
-    fun testRemoveShowFromTickets() = runBlocking {
-
-//        fakeViewModel.setUsersTickets(tickets)
 
         composeTestRule.setContent {
             UserProfile(
@@ -48,10 +35,44 @@ class UserProfileTest {
                 viewModel = fakeViewModel
             )
         }
+    }
 
-        composeTestRule.onNodeWithText("Movie 1").performGesture {
-            swipeLeft()
+    @Test
+    fun testRemoveShowFromWatchlist() = runBlocking {
+
+        Log.d("UserProfileTest", "Test removing from watchlist started")
+
+        composeTestRule.waitForIdle()
+
+        composeTestRule.onNodeWithText("Movie 4").performTouchInput {
+            down(center)
+            moveBy(Offset(x = -1000f, y = 0f))
+            up()
         }
+
+        composeTestRule.waitForIdle()
+
+        assertTrue(fakeViewModel.removeMovieFromWatchlistCalled)
+    }
+
+    @Test
+    fun testRemoveShowFromTickets() = runBlocking {
+
+        Log.d("UserProfileTest", "Test removing from tickets started")
+
+        composeTestRule.waitForIdle()
+
+        composeTestRule.onNodeWithText("Tickets").performClick()
+
+        composeTestRule.waitForIdle()
+
+        composeTestRule.onAllNodesWithText("Movie 1")[0].performTouchInput {
+            down(center)
+            moveBy(Offset(x = -1000f, y = 0f))
+            up()
+        }
+
+        composeTestRule.waitForIdle()
 
         assertTrue(fakeViewModel.removeUsersTicketCalled)
     }

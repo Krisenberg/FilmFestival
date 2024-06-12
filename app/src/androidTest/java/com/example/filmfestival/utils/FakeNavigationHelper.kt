@@ -1,4 +1,4 @@
-package com.example.filmfestival.repos
+package com.example.filmfestival.utils
 
 import androidx.navigation.NavController
 import com.example.filmfestival.utils.NavigationHelper

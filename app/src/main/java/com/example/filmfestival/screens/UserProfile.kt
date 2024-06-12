@@ -2,6 +2,7 @@
 
 package com.example.filmfestival.screens
 
+import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
@@ -442,11 +443,13 @@ fun <T> SwipeToDeleteContainer(
     animationDuration: Int = 500,
     content: @Composable (T) -> Unit
 ) {
+    Log.d("SwipeToDeleteContainer", "SwipeToDeleteContainer created")
     var isRemoved by remember { mutableStateOf(false) }
     val state = rememberDismissState(
         confirmValueChange = { value ->
             if (value == DismissValue.DismissedToEnd || value == DismissValue.DismissedToStart) {
                 isRemoved = true
+                Log.d("SwipeToDeleteContainer", "Dismiss value changed: $value")
                 true
             } else {
                 false
@@ -457,6 +460,7 @@ fun <T> SwipeToDeleteContainer(
     LaunchedEffect(key1 = isRemoved) {
         if (isRemoved) {
             delay(animationDuration.toLong())
+            Log.d("SwipeToDeleteContainer", "Item removed")
             onDelete(item)
         }
     }

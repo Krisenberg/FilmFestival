@@ -1,6 +1,5 @@
 package com.example.filmfestival.screens
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -38,27 +37,23 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.example.filmfestival.MainViewModel
-import com.example.filmfestival.R
 import com.example.filmfestival.composables.BottomNavBar
 import com.example.filmfestival.utils.NavigationHelper
-import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.input.pointer.pointerInteropFilter
 import coil.compose.AsyncImage
-import coil.compose.rememberImagePainter
 import com.example.filmfestival.MainViewModelInterface
+import com.example.filmfestival.utils.NavigationHelperInterface
 import com.example.filmfestival.utils.NavigationRoutes
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun EditUser(
-    navHelper: NavigationHelper,
+    navHelper: NavigationHelperInterface,
     viewModel: MainViewModelInterface,
     modifier: Modifier = Modifier
 ) {
@@ -123,6 +118,7 @@ fun EditUser(
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp)
                     .background(MaterialTheme.colorScheme.background)
+                    .testTag("usernameTextField")
                     .align(Alignment.CenterHorizontally),
                 keyboardOptions = KeyboardOptions.Default.copy(
                     imeAction = androidx.compose.ui.text.input.ImeAction.Done,
