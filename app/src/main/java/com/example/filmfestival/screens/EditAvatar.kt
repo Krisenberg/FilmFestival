@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -37,18 +36,16 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.filmfestival.MainViewModel
 import com.example.filmfestival.composables.BottomNavBar
-import com.example.filmfestival.utils.NavigationHelper
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.filmfestival.MainViewModelInterface
+import com.example.filmfestival.utils.NavigationHelperInterface
 import kotlinx.coroutines.launch
 
 @Composable
 fun EditAvatar(
-    navHelper: NavigationHelper,
+    navHelper: NavigationHelperInterface,
     viewModel: MainViewModelInterface,
     modifier: Modifier = Modifier
 ){
@@ -113,7 +110,7 @@ fun EditAvatar(
                                         model = ImageRequest.Builder(LocalContext.current)
                                             .data(actorPhotoUrl)
                                             .build(),
-                                        contentDescription = null,
+                                        contentDescription = "Photo of actor with ID $actorId",
                                         modifier = Modifier
                                             .size(150.dp)
                                             .padding(4.dp)

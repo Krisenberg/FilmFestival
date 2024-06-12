@@ -21,9 +21,13 @@ class FakeMainViewModel : MainViewModelInterface {
         Triple(1, "Title1", "Poster1"),
         Triple(2, "Title2", "Poster2")
     )
+    private val fakeActors = listOf(
+        Actor(1, "Timothée Chalamet", "https://bi.im-g.pl/im/0b/53/1d/z30748939ICR,Timothee-Chalamet.jpg"),
+        Actor(2, "Zendaya", "https://fwcdn.pl/ppo/60/35/1546035/451218.2.jpg")
+    )
     private val fakeActorsIdPhoto = listOf(
-        Pair(1, "Photo1"),
-        Pair(2, "Photo2")
+        Pair(1, "https://bi.im-g.pl/im/0b/53/1d/z30748939ICR,Timothee-Chalamet.jpg"),
+        Pair(2, "https://fwcdn.pl/ppo/60/35/1546035/451218.2.jpg")
     )
     private val fakeMovie = Movie(
         movieId = 1,
@@ -76,6 +80,7 @@ class FakeMainViewModel : MainViewModelInterface {
     var removeMovieFromWatchlistCalled = false
     var removeUsersTicketCalled = false
     private var username = "oldUserName"
+    private var avatarUrl = "https://bi.im-g.pl/im/0b/53/1d/z30748939ICR,Timothee-Chalamet.jpg"
 
     override suspend fun getMoviesIdTitlePoster(): List<Triple<Int, String, String>> {
         return fakeMoviesIdTitlePoster
@@ -133,7 +138,7 @@ class FakeMainViewModel : MainViewModelInterface {
     }
 
     override fun getAvatar(userId: Int): Flow<String> {
-        return flowOf("")
+        return flowOf(avatarUrl)
     }
 
     override fun changeUsername(userId: Int, newUsername: String) {
@@ -141,5 +146,6 @@ class FakeMainViewModel : MainViewModelInterface {
     }
 
     override fun changeAvatar(userId: Int, newAvatar: String) {
+        avatarUrl = newAvatar
     }
 }
