@@ -16,9 +16,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.sp
-import com.example.filmfestival.utils.NavigationHelper
 import com.example.filmfestival.utils.NavigationHelperInterface
 import com.example.filmfestival.utils.NavigationRoutes
+import com.posthog.PostHog
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 
 sealed class BottomNavIcon(val route: NavigationRoutes, val iconOutlined: ImageVector,
                            val iconFilled: ImageVector, val label: String){
@@ -40,21 +43,29 @@ fun BottomNavBar(
         val currentRoute = navHelper.getCurrentRoute()
         val navIcons = listOf(BottomNavIcon.Movies, BottomNavIcon.Home, BottomNavIcon.Profile)
 
+        val isTestVariant = remember { mutableStateOf(false) }
+        LaunchedEffect(key1 = Unit) {
+            isTestVariant.value = PostHog.getFeatureFlag("android-navbar-color-experiment") == "test"
+        }
+
+        val iconColor = if (isTestVariant.value) Color.Blue else MaterialTheme.colorScheme.onBackground
+
         navIcons.forEach { icon ->
             NavigationBarItem(
                 selected = currentRoute == icon.route.name,
                 onClick = {
+                    PostHog.capture("navigation_bar_clicked");
                     navHelper.navigateBottomBar(icon.route)
                 },
                 icon = { Icon (
                     imageVector = if (currentRoute == icon.route.name) { icon.iconFilled } else icon.iconOutlined,
                     contentDescription = icon.label,
-                    tint = MaterialTheme.colorScheme.onBackground
+                    tint = iconColor
                 )},
                 label = { Text(
                     text = icon.label,
                     fontSize = 12.sp,
-                    color = MaterialTheme.colorScheme.onBackground
+                    color = iconColor
                 )},
             )
         }

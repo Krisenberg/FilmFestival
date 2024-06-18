@@ -33,6 +33,7 @@ import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DismissDirection
+import androidx.compose.material3.DismissState
 import androidx.compose.material3.DismissValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -77,6 +78,7 @@ import com.example.filmfestival.models.Show
 import com.example.filmfestival.utils.NavigationHelper
 import com.example.filmfestival.utils.NavigationHelperInterface
 import com.example.filmfestival.utils.NavigationRoutes
+import com.posthog.PostHog
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
@@ -180,6 +182,14 @@ fun TopBar(
     modifier: Modifier = Modifier,
     username : String
 ) {
+    val isTestVariant = remember { mutableStateOf(false) }
+    LaunchedEffect(key1 = Unit) {
+        isTestVariant.value = PostHog.getFeatureFlag("android-edit-user-clicked") == "test"
+    }
+
+    val iconSize = if (isTestVariant.value) 40.dp else 24.dp
+
+
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -195,11 +205,12 @@ fun TopBar(
                 contentDescription = "Back",
                 tint = Color.White,
                 modifier = Modifier
-                    .size(28.dp)
+                    .size(iconSize)
             )
         }
         Button(
             onClick = {
+                PostHog.capture("edit_user_clicked");
                 navHelper.navigate(NavigationRoutes.USER_PROFILE_EDIT)
             },
             colors = ButtonDefaults.outlinedButtonColors(containerColor = Color.Transparent)
@@ -208,7 +219,7 @@ fun TopBar(
                 painter = painterResource(id = R.drawable.ic_pencil),
                 contentDescription = "Edit",
                 tint = Color.White,
-                modifier = Modifier.size(24.dp)
+                modifier = Modifier.size(iconSize)
             )
         }
     }
@@ -311,6 +322,10 @@ fun Watchlist(
     viewModel: MainViewModelInterface
 ) {
     val coroutineScope = rememberCoroutineScope()
+    val isTestVariant = remember { mutableStateOf(false) }
+    LaunchedEffect(key1 = Unit) {
+        isTestVariant.value = PostHog.getFeatureFlag("android-remove-from-watchlist") == "test"
+    }
     LazyColumn(
         modifier = modifier.fillMaxSize()
     ) {
@@ -318,16 +333,33 @@ fun Watchlist(
             items = watchlist,
             key = { it.movieId }
         ) { movie ->
-            SwipeToDeleteContainer(
-                item = movie,
-                onDelete = { movieToDelete ->
-                    coroutineScope.launch {
-                        viewModel.removeMovieFromUsersWatchlist(1, movieToDelete.movieId)
+            if (isTestVariant.value) {
+                SwipeToDeleteContainerTest(
+                    item = movie,
+                    onDelete = { movieToDelete ->
+                        coroutineScope.launch {
+                            viewModel.removeMovieFromUsersWatchlist(1, movieToDelete.movieId)
+                        }
+                        PostHog.capture("remove_from_watchlist")
                     }
+                ) { movieItem ->
+                    MovieRow(movie = movieItem, navHelper = navHelper)
+                    Spacer(modifier = Modifier.height(15.dp))
                 }
-            ) { movieItem ->
-                MovieRow(movie = movieItem, navHelper = navHelper)
-                Spacer(modifier = Modifier.height(15.dp))
+            }
+            else {
+                SwipeToDeleteContainer(
+                    item = movie,
+                    onDelete = { movieToDelete ->
+                        coroutineScope.launch {
+                            viewModel.removeMovieFromUsersWatchlist(1, movieToDelete.movieId)
+                        }
+                        PostHog.capture("remove_from_watchlist");
+                    }
+                ) { movieItem ->
+                    MovieRow(movie = movieItem, navHelper = navHelper)
+                    Spacer(modifier = Modifier.height(15.dp))
+                }
             }
         }
     }
@@ -486,6 +518,8 @@ fun <T> SwipeToDeleteContainer(
                         fraction
                     }
                 )
+
+
             },
             dismissContent = { content(item) },
             directions = setOf(DismissDirection.EndToStart)
@@ -513,4 +547,71 @@ fun DeleteBackground(swipeProgress: () -> Float) {
             modifier = Modifier.alpha(iconAlpha)
         )
     }
+}
+
+@Composable
+fun <T> SwipeToDeleteContainerTest(
+    item: T,
+    onDelete: (T) -> Unit,
+    animationDuration: Int = 500,
+    content: @Composable (T) -> Unit
+) {
+    var isRemoved by remember {
+        mutableStateOf(false)
+    }
+    val state = rememberDismissState(
+        confirmValueChange = { value ->
+            if (value == DismissValue.DismissedToStart) {
+                isRemoved = true
+                true
+            } else {
+                false
+            }
+        }
+    )
+            LaunchedEffect(key1 = isRemoved) {
+                if(isRemoved) {
+                    delay(animationDuration.toLong())
+                    onDelete(item)
+                }
+            }
+
+    AnimatedVisibility(
+        visible = !isRemoved,
+        exit = shrinkVertically(
+            animationSpec = tween(durationMillis = animationDuration),
+            shrinkTowards = Alignment.Top
+        ) + fadeOut()
+    ) {
+        SwipeToDismiss(
+            state = state,
+            background = {
+                DeleteBackgroundTest(swipeDismissState = state)
+            },
+            dismissContent = { content(item) },
+            directions = setOf(DismissDirection.EndToStart)
+        )
+    }
+}
+
+@Composable
+fun DeleteBackgroundTest(
+    swipeDismissState: DismissState
+) {
+    val color = if (swipeDismissState.dismissDirection == DismissDirection.EndToStart) {
+        Color.DarkGray
+    } else Color.Transparent
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(color)
+                    .padding(16.dp),
+                contentAlignment = Alignment.CenterEnd
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Delete,
+                    contentDescription = null,
+                    tint = Color.White
+                )
+            }
 }

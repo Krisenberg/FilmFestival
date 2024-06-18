@@ -79,6 +79,7 @@ dependencies {
     testImplementation("junit:junit:4.12")
     testImplementation("junit:junit:4.12")
     androidTestImplementation("androidx.navigation:navigation-testing:2.5.3")
+    implementation("com.posthog:posthog-android:3.3.2")
 
     annotationProcessor(libs.room.compiler)
     ksp(libs.room.compiler)
