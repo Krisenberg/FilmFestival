@@ -40,6 +40,13 @@ open class NavigationHelper (
         }
     }
 
+    fun navigateToNewsDetails(route: NavigationRoutes, newsId: String){
+        navController.navigate("${route.name}/${newsId}"){
+            launchSingleTop = true
+            restoreState = true
+        }
+    }
+
     override fun navigateBottomBar(route: NavigationRoutes) {
         navController.navigate(route.name) {
 //            navController.popBackStack(

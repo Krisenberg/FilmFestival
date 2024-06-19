@@ -24,10 +24,13 @@ hilt-nav = "1.2.0"
 exoplayer = "1.3.1"
 media3Ui = "1.3.1"
 yt-player = "0.28"
+retrofit = "2.11.0"
+posthogVersion = "3.3.2"
 
 [libraries]
 androidx-material-icons = { group = "androidx.compose.material", name = "material-icons-extended", version.ref = "materialIcons" }
 androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigationCompose" }
+androidx-navigation-testing = { group = "androidx.navigation", name = "navigation-testing", version.ref = "navigationCompose" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 mockito-core = { module = "org.mockito:mockito-core", version.ref = "mockito-core" }
 mockito-kotlin = { module = "org.mockito.kotlin:mockito-kotlin", version.ref = "mockito-kotlin" }
@@ -58,6 +61,9 @@ hilt-compiler = { group = "com.google.dagger", name = "hilt-compiler", version.r
 hilt-navigation = { group = "androidx.hilt", name = "hilt-navigation-compose", version.ref = "hilt-nav" }
 androidx-media3-ui = { group = "androidx.media3", name = "media3-ui", version.ref = "media3Ui" }
 youtube-player = { group = "com.pierfrancescosoffritti.androidyoutubeplayer", name = "chromecast-sender", version.ref = "yt-player" }
+retrofit2 = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
+retrofit2-gson = { group = "com.squareup.retrofit2", name = "converter-gson", version.ref = "retrofit" }
+posthog = { group = "com.posthog", name = "posthog-android", version.ref = "posthogVersion" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
