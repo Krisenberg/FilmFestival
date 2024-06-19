@@ -2,11 +2,6 @@ package com.example.filmfestival.api
 
 import javax.inject.Inject
 
-//interface NewsRepository {
-//    suspend fun getNewsPreviews(): List<NewsPreview>
-//    suspend fun getNewsDetailsById(newsId: String): News
-//}
-
 class NewsRepository @Inject constructor (
     private val api: FilmFestivalAPI
 ){
@@ -20,8 +15,6 @@ class NewsRepository @Inject constructor (
             e.printStackTrace()
         }
 
-//        if (newsPreviewList == null)
-//            return listOf()
         if (newsPreviewList != null)
             return APIResponseConverter.convertResponseNewsList(newsPreviewList)
         return null

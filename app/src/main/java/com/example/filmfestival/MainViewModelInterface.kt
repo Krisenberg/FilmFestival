@@ -2,7 +2,6 @@ package com.example.filmfestival
 
 import com.example.filmfestival.api.News
 import com.example.filmfestival.api.NewsPreview
-import com.example.filmfestival.models.Actor
 import com.example.filmfestival.models.Movie
 import com.example.filmfestival.models.Show
 import com.example.filmfestival.models.dto.MovieAllData

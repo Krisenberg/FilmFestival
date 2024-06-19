@@ -4,7 +4,6 @@ import android.content.ContentResolver
 import android.content.Context
 import androidx.media3.common.MediaItem
 import android.net.Uri
-import android.util.Log
 import androidx.media3.exoplayer.ExoPlayer
 import com.example.filmfestival.R
 

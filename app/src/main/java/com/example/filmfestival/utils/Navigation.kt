@@ -47,29 +47,6 @@ fun CreateNavigationGraph(
             MovieDetails(navHelper = navHelper, viewModel = viewModel, movieId = movieId)
         }
 
-//        composable(
-//            route = "${NavigationRoutes.NEWS_DETAILS.name}/{imageRes}/{date}/{text}/{description}",
-//            arguments = listOf(
-//                navArgument(name = "imageRes"){ type = NavType.IntType},
-//                navArgument(name = "date"){ type = NavType.StringType},
-//                navArgument(name = "text"){ type = NavType.StringType},
-//                navArgument(name = "description"){ type = NavType.StringType}
-//            )
-//        ){args->
-//            val imageRes = args.arguments?.getInt("imageRes") ?: 1
-//            val date = args.arguments?.getString("date") ?: "Date"
-//            val text = args.arguments?.getString("text") ?: "Text"
-//            val description = args.arguments?.getString("description") ?: "Description"
-//            NewsScreen(
-//                navHelper = navHelper,
-//                viewModel = viewModel,
-//                imageRes = imageRes,
-//                date = date,
-//                text = text,
-//                description = description
-//            )
-//        }
-
         composable(
             route = "${NavigationRoutes.NEWS_DETAILS.name}/{newsId}",
             arguments = listOf(navArgument(name = "newsId"){ type = NavType.StringType})

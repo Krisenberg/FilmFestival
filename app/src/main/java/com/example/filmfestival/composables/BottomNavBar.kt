@@ -54,7 +54,7 @@ fun BottomNavBar(
             NavigationBarItem(
                 selected = currentRoute == icon.route.name,
                 onClick = {
-                    PostHog.capture("navigation_bar_clicked");
+                    PostHog.capture("navigation_bar_clicked")
                     navHelper.navigateBottomBar(icon.route)
                 },
                 icon = { Icon (

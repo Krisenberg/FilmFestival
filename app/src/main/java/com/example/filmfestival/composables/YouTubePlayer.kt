@@ -38,7 +38,7 @@ fun YouTubePlayer(
                     .controls(1)
                     .rel(0)
                     .fullscreen(1)
-                    .build();
+                    .build()
 
                 initialize(object: AbstractYouTubePlayerListener(){
                     override fun onReady(youTubePlayer: YouTubePlayer) {

@@ -18,7 +18,7 @@ import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -45,7 +45,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.filmfestival.composables.BottomNavBar
-import com.example.filmfestival.utils.NavigationHelper
 import coil.compose.AsyncImage
 import com.example.filmfestival.MainViewModelInterface
 import com.example.filmfestival.utils.NavigationHelperInterface
@@ -89,7 +88,7 @@ fun EditUser(
                     colors = ButtonDefaults.outlinedButtonColors(containerColor = Color.Transparent)
                 ) {
                     Icon(
-                        imageVector = Icons.Default.ArrowBack,
+                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                         contentDescription = "Back",
                         tint = Color.White,
                         modifier = Modifier

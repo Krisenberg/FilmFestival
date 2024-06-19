@@ -33,13 +33,6 @@ open class NavigationHelper (
         }
     }
 
-    fun navigateWithNews(route: NavigationRoutes, imageRes: Int, date: String, text: String, description: String){
-        navController.navigate("${route.name}/${imageRes}/${date}/${text}/${description}"){
-            launchSingleTop = true
-            restoreState = true
-        }
-    }
-
     fun navigateToNewsDetails(route: NavigationRoutes, newsId: String){
         navController.navigate("${route.name}/${newsId}"){
             launchSingleTop = true
@@ -49,10 +42,6 @@ open class NavigationHelper (
 
     override fun navigateBottomBar(route: NavigationRoutes) {
         navController.navigate(route.name) {
-//            navController.popBackStack(
-//                destinationId = navController.graph.findStartDestination().id,
-//                inclusive = false
-//            )
             val backStackEntry = navController.previousBackStackEntry?.destination?.route
             if (backStackEntry == route.name) {
                 goBack()
