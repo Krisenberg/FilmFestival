@@ -46,6 +46,7 @@ import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.filmfestival.api.NewsPreview
+import com.example.filmfestival.composables.ShowProgressIndicator
 import com.example.filmfestival.models.dto.MovieAllData
 import com.example.filmfestival.utils.NavigationHelper
 import com.example.filmfestival.utils.NavigationRoutes
@@ -113,12 +114,7 @@ fun HomeScreen(
                     Spacer(modifier = Modifier.width(16.dp))
                 }
             } ?: run {
-                Box(modifier = Modifier.fillMaxSize()) {
-                    CircularProgressIndicator(
-                        modifier = Modifier.align(Alignment.Center),
-                        color = MaterialTheme.colorScheme.primary
-                    )
-                }
+                ShowProgressIndicator()
             }
         }
 
@@ -130,12 +126,11 @@ fun NewsItem(
     news: NewsPreview,
     navHelper: NavigationHelper
 ) {
-//    val screenWidth = LocalConfiguration.current.screenWidthDp.dp
     Column(
         modifier = Modifier
             .padding(horizontal = 24.dp, vertical = 5.dp)
             .fillMaxSize()
-            .clickable(enabled = true){
+            .clickable(enabled = true) {
                 navHelper.navigateToNewsDetails(
                     NavigationRoutes.NEWS_DETAILS,
                     news.id
@@ -145,7 +140,7 @@ fun NewsItem(
         AsyncImage(
             modifier = Modifier
                 .fillMaxWidth()
-                .aspectRatio((16f)/(9f))
+                .aspectRatio((16f) / (9f))
                 .clip(shape = RoundedCornerShape(16.dp)),
             model = ImageRequest
                 .Builder(LocalContext.current)
@@ -154,23 +149,6 @@ fun NewsItem(
             contentDescription = "Image of the news ${news.title}",
             contentScale = ContentScale.Crop
         )
-//        Image(
-//            painter = painterResource(id = news.imageRes),
-//            contentDescription = null,
-//            modifier = Modifier
-//                .height(200.dp)
-//                .width(350.dp)
-//                .clip(shape = RoundedCornerShape(16.dp))
-//                .clickable(enabled = true){
-//                    navHelper.navigateWithNews(
-//                        NavigationRoutes.NEWS_DETAILS,
-//                        news.imageRes,
-//                        news.date,
-//                        news.text,
-//                        news.description
-//                    )
-//                }
-//        )
         Spacer(modifier = Modifier.height(12.dp))
         Text(
             text = news.date,
@@ -193,34 +171,6 @@ fun NewsItem(
                 overflow = TextOverflow.Clip,
                 modifier = Modifier
             )
-//            }
         }
     }
 }
-
-//data class News(
-//    val imageRes: Int,
-//    val date: String,
-//    val text: String,
-//    val description: String
-//)
-//val newsList = listOf(
-//    News(
-//        imageRes = R.drawable.news1,
-//        date = "May 5, 2024",
-//        text = "Want to take part in discussion related to the movie? Sign up!",
-//        description = "We're inviting you to share your thoughts, insights, and opinions on the film “Dune: Part Two”. It's the perfect opportunity to connect with fellow film buffs and explore different perspectives! To participate, simply sign up on our website and reserve your spot. See you at the discussion! \uD83C\uDFA5✨"
-//    ),
-//    News(
-//        imageRes = R.drawable.news2,
-//        date = "May 6, 2024",
-//        text = "Almost booked out! Only last tickets left.",
-//        description = "Attention, movie buffs! Dune 2 is gearing up for its highly anticipated premiere, and tickets are flying off the shelves faster than a sandworm in a spice frenzy. Director Denis Villeneuve promises another visual feast, with epic battles and stellar performances. With just a few seats left, now's your chance to secure your spot and be among the first to experience the adventure. Don't miss out – grab your tickets now for the cinematic event of the year! \uD83C\uDF1F\uD83C\uDFA5"
-//    ),
-//    News(
-//        imageRes = R.drawable.news3,
-//        date = "May 8, 2024",
-//        text = "New Movie Released! Zone of Interest Joins SFFF this Year.",
-//        description = "Exciting news for film enthusiasts! \"Zone of Interest\" is the latest addition to this year's lineup at the SFFF and audiences are buzzing with anticipation. Directed by a visionary filmmaker, this gripping new release promises to captivate viewers with its unique storyline and compelling characters. As the festival draws near, make sure to mark your calendars and secure your tickets for a journey into the unknown \uD83D\uDE80\uD83C\uDF7F"
-//    )
-//)
