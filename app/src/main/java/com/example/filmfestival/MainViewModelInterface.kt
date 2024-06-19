@@ -1,5 +1,7 @@
 package com.example.filmfestival
 
+import com.example.filmfestival.api.News
+import com.example.filmfestival.api.NewsPreview
 import com.example.filmfestival.models.Actor
 import com.example.filmfestival.models.Movie
 import com.example.filmfestival.models.Show
@@ -28,4 +30,6 @@ interface MainViewModelInterface {
     fun getAvatar(userId: Int): Flow<String>
     fun changeUsername(userId: Int, newUsername: String)
     fun changeAvatar(userId: Int, newAvatar: String)
+    suspend fun getFilmFestivalNewsPreviews(): List<NewsPreview>
+    suspend fun getFilmFestivalNewsDetailsById(newsId: String): News
 }

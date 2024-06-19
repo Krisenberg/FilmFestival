@@ -2,6 +2,9 @@ package com.example.filmfestival
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.filmfestival.api.News
+import com.example.filmfestival.api.NewsPreview
+import com.example.filmfestival.api.NewsRepository
 import com.example.filmfestival.data.MovieRepository
 import com.example.filmfestival.data.UserRepository
 import com.example.filmfestival.models.Movie
@@ -22,7 +25,8 @@ import javax.inject.Inject
 class MainViewModel @Inject constructor(
     private val movieRepository: MovieRepository,
     private val userRepository: UserRepository,
-    private val soundManager: SoundManager
+    private val soundManager: SoundManager,
+    private val apiRepository: NewsRepository
 ): ViewModel(), MainViewModelInterface {
 
     override suspend fun getMoviesIdTitlePoster() = movieRepository.moviesIdTitlePoster()
@@ -82,5 +86,13 @@ class MainViewModel @Inject constructor(
         viewModelScope.launch {
             userRepository.changeAvatar(userId, newAvatar)
         }
+    }
+
+    override suspend fun getFilmFestivalNewsPreviews(): List<NewsPreview> {
+        return apiRepository.getNewsPreviews()
+    }
+
+    override suspend fun getFilmFestivalNewsDetailsById(newsId: String): News {
+        return apiRepository.getNewsDetailsById(newsId)
     }
 }
