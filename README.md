@@ -8,9 +8,11 @@
 
 ## UI design
 Application UI was design in the following Figma project:  
-`https://www.figma.com/design/0I1a6Scu0Gnp7X4TbdyKKW/Mockupy?node-id=122-538`
+https://www.figma.com/design/0I1a6Scu0Gnp7X4TbdyKKW/Mockupy?node-id=122-538
 
-Color scheme was generated using Material Theme Builder (https://material-foundation.github.io/material-theme-builder/)  
+Color scheme was generated using Material Theme Builder:  
+https://material-foundation.github.io/material-theme-builder/  
+
 The following colors are used in the app:  
 <p float='left'>
   <img src='assets/dark_scheme.png' width='571' height='398'>
@@ -20,7 +22,7 @@ The following colors are used in the app:
 To store all the required data Room database was used.  
 The following image presents a database diagram:  
 <p float='left'>
-  <img src='assets/database_diagram.jpg' width='1175' height='478'>
+  <img src='assets/database_diagram.jpg' width='984' height='400'>
 </p>
 
 ## Implementation
