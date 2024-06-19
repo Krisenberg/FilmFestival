@@ -30,6 +30,6 @@ interface MainViewModelInterface {
     fun getAvatar(userId: Int): Flow<String>
     fun changeUsername(userId: Int, newUsername: String)
     fun changeAvatar(userId: Int, newAvatar: String)
-    suspend fun getFilmFestivalNewsPreviews(): List<NewsPreview>
-    suspend fun getFilmFestivalNewsDetailsById(newsId: String): News
+    suspend fun getFilmFestivalNewsPreviews(): List<NewsPreview>?
+    suspend fun getFilmFestivalNewsDetailsById(newsId: String): News?
 }

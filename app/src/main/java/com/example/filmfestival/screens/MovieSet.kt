@@ -51,6 +51,7 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.filmfestival.MainViewModel
 import com.example.filmfestival.composables.BottomNavBar
+import com.example.filmfestival.composables.ShowProgressIndicator
 import com.example.filmfestival.models.Actor
 import com.example.filmfestival.models.Movie
 import com.example.filmfestival.models.dto.MovieAllData
@@ -141,12 +142,7 @@ fun MovieSet(
                 }
             }
         } ?: run {
-            Box(modifier = Modifier.fillMaxSize()) {
-                CircularProgressIndicator(
-                    modifier = Modifier.align(Alignment.Center),
-                    color = MaterialTheme.colorScheme.primary
-                )
-            }
+            ShowProgressIndicator()
         }
     }
 }

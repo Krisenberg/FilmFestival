@@ -74,6 +74,7 @@ import com.example.filmfestival.MainViewModel
 import com.example.filmfestival.MainViewModelInterface
 import com.example.filmfestival.R
 import com.example.filmfestival.composables.BottomNavBar
+import com.example.filmfestival.composables.ShowProgressIndicator
 import com.example.filmfestival.models.Movie
 import com.example.filmfestival.models.Show
 import com.example.filmfestival.utils.NavigationHelper
@@ -154,12 +155,7 @@ fun UserProfile(
                             )
                         }
                     }} ?: run {
-                        Box(modifier = Modifier.fillMaxSize()) {
-                            CircularProgressIndicator(
-                                modifier = Modifier.align(Alignment.Center),
-                                color = MaterialTheme.colorScheme.primary
-                            )
-                        }
+                        ShowProgressIndicator()
                     }
                 }
                 1 -> if(usersTickets.value.isEmpty()) {

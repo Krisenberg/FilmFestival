@@ -90,6 +90,7 @@ import com.example.filmfestival.utils.NavigationHelper
 import com.example.filmfestival.utils.NavigationRoutes
 import com.example.filmfestival.utils.Sound
 import com.example.filmfestival.composables.BottomNavBar
+import com.example.filmfestival.composables.ShowProgressIndicator
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.FullscreenListener
@@ -576,12 +577,7 @@ fun MovieDetails(
                 )
             }
         } ?: run {
-            Box(modifier = Modifier.fillMaxSize()) {
-                CircularProgressIndicator(
-                    modifier = Modifier.align(Alignment.Center),
-                    color = MaterialTheme.colorScheme.primary
-                )
-            }
+            ShowProgressIndicator()
         }
     }
 }

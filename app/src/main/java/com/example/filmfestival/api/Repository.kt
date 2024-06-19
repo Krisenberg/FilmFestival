@@ -11,7 +11,7 @@ class NewsRepository @Inject constructor (
     private val api: FilmFestivalAPI
 ){
 
-    suspend fun getNewsPreviews(): List<NewsPreview> {
+    suspend fun getNewsPreviews(): List<NewsPreview>? {
         var newsPreviewList: List<NewsPreview>? = null
 
         try {
@@ -20,13 +20,14 @@ class NewsRepository @Inject constructor (
             e.printStackTrace()
         }
 
-        if (newsPreviewList == null)
-            return listOf()
-
-        return APIResponseConverter.convertResponseNewsList(newsPreviewList)
+//        if (newsPreviewList == null)
+//            return listOf()
+        if (newsPreviewList != null)
+            return APIResponseConverter.convertResponseNewsList(newsPreviewList)
+        return null
     }
 
-    suspend fun getNewsDetailsById(newsId: String): News {
+    suspend fun getNewsDetailsById(newsId: String): News? {
         var newsDetails: News? = null
 
         try {
@@ -35,7 +36,9 @@ class NewsRepository @Inject constructor (
             e.printStackTrace()
         }
 
-        return APIResponseConverter.convertResponseSingleNews(newsDetails!!)
+        if (newsDetails != null)
+            return APIResponseConverter.convertResponseSingleNews(newsDetails)
+        return null
     }
 
 }

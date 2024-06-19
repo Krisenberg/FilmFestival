@@ -88,11 +88,11 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    override suspend fun getFilmFestivalNewsPreviews(): List<NewsPreview> {
+    override suspend fun getFilmFestivalNewsPreviews(): List<NewsPreview>? {
         return apiRepository.getNewsPreviews()
     }
 
-    override suspend fun getFilmFestivalNewsDetailsById(newsId: String): News {
+    override suspend fun getFilmFestivalNewsDetailsById(newsId: String): News? {
         return apiRepository.getNewsDetailsById(newsId)
     }
 }

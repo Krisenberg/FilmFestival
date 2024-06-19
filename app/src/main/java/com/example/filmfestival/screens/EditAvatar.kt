@@ -42,6 +42,7 @@ import com.example.filmfestival.composables.BottomNavBar
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.filmfestival.MainViewModelInterface
+import com.example.filmfestival.composables.ShowProgressIndicator
 import com.example.filmfestival.utils.NavigationHelperInterface
 import kotlinx.coroutines.launch
 
@@ -130,12 +131,7 @@ fun EditAvatar(
                     }
                 }
             } ?: run {
-                Box(modifier = Modifier.fillMaxSize()) {
-                    CircularProgressIndicator(
-                        modifier = Modifier.align(Alignment.Center),
-                        color = MaterialTheme.colorScheme.primary
-                    )
-                }
+                ShowProgressIndicator()
             }
         }
         if (showDialog.value) {
@@ -151,7 +147,9 @@ fun EditAvatar(
                 confirmButton = {
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
-                        modifier = Modifier.fillMaxWidth().padding(16.dp)
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp)
                     ) {
                         Button(
                             onClick = {

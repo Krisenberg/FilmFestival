@@ -55,6 +55,7 @@ import com.example.filmfestival.R
 import com.example.filmfestival.api.News
 import com.example.filmfestival.api.NewsPreview
 import com.example.filmfestival.composables.BottomNavBar
+import com.example.filmfestival.composables.ShowProgressIndicator
 import com.example.filmfestival.utils.NavigationHelper
 
 @Composable
@@ -109,7 +110,7 @@ fun NewsScreen(
                     AsyncImage(
                         modifier = Modifier
                             .fillMaxWidth(0.9f)
-                            .aspectRatio((16f)/(9f))
+                            .aspectRatio((16f) / (9f))
                             .clip(shape = RoundedCornerShape(16.dp)),
                         model = ImageRequest
                             .Builder(LocalContext.current)
@@ -158,12 +159,7 @@ fun NewsScreen(
                 }
             }
         } ?: run {
-            Box(modifier = Modifier.fillMaxSize()) {
-                CircularProgressIndicator(
-                    modifier = Modifier.align(Alignment.Center),
-                    color = MaterialTheme.colorScheme.primary
-                )
-            }
+            ShowProgressIndicator()
         }
     }
 }
