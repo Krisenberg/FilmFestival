@@ -1,6 +1,8 @@
 package com.example.filmfestival
 
 import android.util.Log
+import com.example.filmfestival.api.News
+import com.example.filmfestival.api.NewsPreview
 import com.example.filmfestival.models.Actor
 import com.example.filmfestival.models.Award
 import com.example.filmfestival.models.Movie
@@ -127,7 +129,7 @@ class FakeMainViewModel : MainViewModelInterface {
 
     override suspend fun removeMovieFromUsersWatchlist(userId: Int, movieId: Int) {
         removeMovieFromWatchlistCalled = true
-        Log.d("FakeMainViewModel", "removeMovieFromWatchlistCalled: $removeMovieFromWatchlistCalled")
+//        Log.d("FakeMainViewModel", "removeMovieFromWatchlistCalled: $removeMovieFromWatchlistCalled")
     }
 
     override fun playSound(sound: Sound) {
@@ -148,4 +150,8 @@ class FakeMainViewModel : MainViewModelInterface {
     override fun changeAvatar(userId: Int, newAvatar: String) {
         avatarUrl = newAvatar
     }
+
+    override suspend fun getFilmFestivalNewsPreviews(): List<NewsPreview>? { return null; }
+
+    override suspend fun getFilmFestivalNewsDetailsById(newsId: String): News? { return null; }
 }
