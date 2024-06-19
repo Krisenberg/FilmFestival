@@ -8,7 +8,6 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -26,13 +25,11 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DismissDirection
 import androidx.compose.material3.DismissState
 import androidx.compose.material3.DismissValue
@@ -59,25 +56,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
-import coil.compose.rememberImagePainter
-import coil.request.ImageRequest
-import com.example.filmfestival.MainViewModel
 import com.example.filmfestival.MainViewModelInterface
 import com.example.filmfestival.R
 import com.example.filmfestival.composables.BottomNavBar
 import com.example.filmfestival.composables.ShowProgressIndicator
 import com.example.filmfestival.models.Movie
 import com.example.filmfestival.models.Show
-import com.example.filmfestival.utils.NavigationHelper
 import com.example.filmfestival.utils.NavigationHelperInterface
 import com.example.filmfestival.utils.NavigationRoutes
 import com.posthog.PostHog
@@ -101,7 +92,7 @@ fun UserProfile(
         val scope = rememberCoroutineScope()
         val usersTickets = viewModel
             .getUsersTickets(1)
-            .collectAsStateWithLifecycle(initialValue = emptyList<Triple<Movie, LocalDateTime, Show>>())
+            .collectAsStateWithLifecycle(initialValue = emptyList())
 
         val username by viewModel.getUsername(1).collectAsStateWithLifecycle(initialValue = "Loading...")
         val avatarUrl by viewModel.getAvatar(1).collectAsStateWithLifecycle(initialValue = "")
@@ -118,8 +109,7 @@ fun UserProfile(
             TopBar(
                 navHelper = navHelper,
                 modifier = Modifier
-                    .padding(10.dp),
-                username = username
+                    .padding(10.dp)
             )
             Spacer(modifier = Modifier.height(4.dp))
             ProfileSection(
@@ -181,8 +171,7 @@ fun UserProfile(
 @Composable
 fun TopBar(
     navHelper: NavigationHelperInterface,
-    modifier: Modifier = Modifier,
-    username : String
+    modifier: Modifier = Modifier
 ) {
     val isTestVariant = remember { mutableStateOf(false) }
     LaunchedEffect(key1 = Unit) {
@@ -203,7 +192,7 @@ fun TopBar(
             colors = ButtonDefaults.outlinedButtonColors(containerColor = Color.Transparent)
         ) {
             Icon(
-                imageVector = Icons.Default.ArrowBack,
+                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                 contentDescription = "Back",
                 tint = Color.White,
                 modifier = Modifier
@@ -212,7 +201,7 @@ fun TopBar(
         }
         Button(
             onClick = {
-                PostHog.capture("edit_user_clicked");
+                PostHog.capture("edit_user_clicked")
                 navHelper.navigate(NavigationRoutes.USER_PROFILE_EDIT)
             },
             colors = ButtonDefaults.outlinedButtonColors(containerColor = Color.Transparent)
@@ -356,7 +345,7 @@ fun Watchlist(
                         coroutineScope.launch {
                             viewModel.removeMovieFromUsersWatchlist(1, movieToDelete.movieId)
                         }
-                        PostHog.capture("remove_from_watchlist");
+                        PostHog.capture("remove_from_watchlist")
                     }
                 ) { movieItem ->
                     MovieRow(movie = movieItem, navHelper = navHelper)
