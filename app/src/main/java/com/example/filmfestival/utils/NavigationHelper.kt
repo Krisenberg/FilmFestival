@@ -46,11 +46,16 @@ open class NavigationHelper (
 //                destinationId = navController.graph.findStartDestination().id,
 //                inclusive = false
 //            )
-            popUpTo(navController.graph.findStartDestination().id) {
-                saveState = true
+            val backStackEntry = navController.previousBackStackEntry?.destination?.route
+            if (backStackEntry == route.name) {
+                goBack()
+            } else {
+                popUpTo(navController.graph.findStartDestination().id) {
+                    saveState = true
+                }
+                launchSingleTop = true
+                restoreState = true
             }
-            launchSingleTop = true
-            restoreState = true
         }
     }
 
